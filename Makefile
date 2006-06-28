@@ -1,0 +1,39 @@
+############################
+# Change the task name!
+############################
+TASK = Sci_run_interrupt
+
+include /data/mta4/MTA/include/Makefile.MTA
+
+BIN  = sci_run_add_to_rad_zone_list.perl sci_run_compute_gap.perl sci_run_ephin_plot_main.perl sci_run_find_hardness.perl sci_run_get_ephin.perl sci_run_get_rad_zone_info.perl sci_run_get_radiation_data.perl sci_run_print_html.perl sci_run_print_top_html.perl sci_run_rad_plot.perl sci_run_repeat.perl
+
+DOC  = README
+
+install:
+ifdef BIN
+	rsync --times --cvs-exclude $(BIN) $(INSTALL_BIN)/
+endif
+ifdef DATA
+	mkdir -p $(INSTALL_DATA)
+	rsync --times --cvs-exclude $(DATA) $(INSTALL_DATA)/
+endif
+ifdef DOC
+	mkdir -p $(INSTALL_DOC)
+	rsync --times --cvs-exclude $(DOC) $(INSTALL_DOC)/
+endif
+ifdef IDL_LIB
+	mkdir -p $(INSTALL_IDL_LIB)
+	rsync --times --cvs-exclude $(IDL_LIB) $(INSTALL_IDL_LIB)/
+endif
+ifdef CGI_BIN
+	mkdir -p $(INSTALL_CGI_BIN)
+	rsync --times --cvs-exclude $(CGI_BIN) $(INSTALL_CGI_BIN)/
+endif
+ifdef PERLLIB
+	mkdir -p $(INSTALL_PERLLIB)
+	rsync --times --cvs-exclude $(PERLLIB) $(INSTALL_PERLLIB)/
+endif
+ifdef WWW
+	mkdir -p $(INSTALL_WWW)
+	rsync --times --cvs-exclude $(WWW) $(INSTALL_WWW)/
+endif
