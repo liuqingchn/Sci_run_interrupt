@@ -15,21 +15,38 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+        chomp $_;
+        push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
-#################################################################
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
+
+################################################################
+
+#
+#--- if the next input is given as arguments, use it, otherwise, ask
+#--- a user to type it in.
+#
 
 #
 #--- list of data
 #
 
-print "Time List: ";
-$list = <STDIN>;
+$list      = $ARGV[0];
+
+if($list eq ''){
+
+	print "Time List: ";
+	$list = <STDIN>;
+}
+
 chomp $list;
 
 @name_list  = ();
@@ -50,7 +67,7 @@ close(FH);
 
 for($i = 0; $i < $dat_cnt; $i++){
 	
-	print "$name_list[$i]\n";
+####	print "$name_list[$i]\n";
 
 	@atemp  = split(/:/, $start_list[$i]);
 	$uyear  = $atemp[0];

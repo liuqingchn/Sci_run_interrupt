@@ -15,17 +15,33 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+        chomp $_;
+        push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
-#################################################################
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
 
-print "Time List: ";            # a list of science run interruption
-$date_list = <STDIN>;
+################################################################
+
+#
+#--- if the next input is given as arguments, use it, otherwise, ask
+#--- a user to type it in.
+#
+
+$date_list  = $ARGV[0];  		# date list
+
+if($date_list eq ''){
+	print "Time List: ";            # a list of science run interruption
+	$date_list = <STDIN>;
+}
+
 chomp $date_list;
 
 open(FH, "$date_list");

@@ -15,13 +15,19 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+	chomp $_;
+	push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
+
 #################################################################
 
 $file      = $ARGV[0];
@@ -111,7 +117,7 @@ foreach $time (@time_list){
 	print OUT "$list_date\t";
 	$i = 0;
 	while($i < $cnt){
-		print OUT "($date[$i], ";
+		print OUT "($date[$i],";
 		$i++;
 		if($i < $cnt -1){
 			print OUT "$date[$i]):";

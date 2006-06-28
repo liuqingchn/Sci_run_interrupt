@@ -93,6 +93,8 @@ $infile    = 'zout';
 
 clean_entry();
 
+system("rm zout");
+
 #
 #--- read the past data
 #

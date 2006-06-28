@@ -17,37 +17,57 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+        chomp $_;
+        push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
-#################################################################
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
+
+################################################################
+
+#
+#--- if the next input is given as arguments, use it, otherwise, ask
+#--- a user to type it in.
+#
+
+$data_file      = $ARGV[0];          #---- radiation data
+
+if($data_file =~ /\w/){
+	$usr   = `cat $data_dir/.dare`;
+	$pword = `cat $data_dir/.hakama`;
+}else{
 
 #
 #-- input file name
 #
 
-print "Input file: ";
-$data_file = <STDIN>;
-chomp $data_file;
+	print "Input file: ";
+	$data_file = <STDIN>;
 
 #
 #--- arc4gl user name
 #
 
-print "User: ";
-$usr = <STDIN>;
-chomp $usr;
+	print "User: ";
+	$usr = <STDIN>;
 
 #
 #--- arc4gl password
 #
 
-print "PSWD: ";
-$pword = <STDIN>;
+	print "PSWD: ";
+	$pword = <STDIN>;
+}
+
+chomp $data_file;
+chomp $usr;
 chomp $pword;
 
 open(FH, "$data_file");
@@ -72,7 +92,7 @@ for($k = 0; $k < $total; $k++){
 #--- call get_ephin.perl which actually extracts ephin data from archieve
 #
 
-	system("perl $bin_dir/get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
+	system("perl $bin_dir/sci_run_get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
 
 	$data_file_name = "$web_dir".'/Data_dir/'."$name[$k]".'_eph.txt';
 	system("mv ephin_data.txt $data_file_name");

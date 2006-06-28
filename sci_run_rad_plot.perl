@@ -16,22 +16,41 @@ use PGPLOT;
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+        chomp $_;
+        push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
-#################################################################
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
+
+################################################################
+
+#
+#--- if the next two are given as arguments, use them, otherwise, ask 
+#--- a user to type them in.
+#
+
+$file      = $ARGV[0];		#---- radiation data
+$date_list = $ARGV[1];		#---- a list of science run interruption
+
+chomp $file;
+chomp $date_list;
+
+if($file eq '' || $date_list eq ''){
 
 #
 #--- radiation database
 #
 
-print "Radiation Data File (e.g., rad_data2006): ";
-$file = <STDIN>;
-chomp $file;
+	print "Radiation Data File (e.g., rad_data2006): ";
+	$file = <STDIN>;
+	chomp $file;
 
 #
 #--- a list of science run interruption
@@ -39,9 +58,11 @@ chomp $file;
 #--- 20000608 2000:06:08:05:41 2000:06:09:08:30  96.5  auto
 #
 
-print "Time List: ";
-$date_list = <STDIN>;	
-chomp $date_list;	
+	print "Time List: ";
+	$date_list = <STDIN>;	
+	chomp $date_list;	
+
+}
 
 #
 #--- read radiation data

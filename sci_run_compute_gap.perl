@@ -16,16 +16,23 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, './dir_list');
+@list = ();
+while(<FH>){
+        chomp $_;
+        push(@list, $_);
+}
+close(FH);
 
-$web_dir       = '/data/mta/www/mta_interrupt_test/';
-$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
+$bin_dir       = $list[0];
+$data_dir      = $list[1];
+$web_dir       = $list[2];
+$house_keeping = $list[3];
+
 #################################################################
 
 $file = $ARGV[0];
+
 #
 #--- read radiation zone informtion
 #
@@ -114,7 +121,7 @@ close(FH);
 
 system("mv $house_keeping/all_data $house_keeping/all_data~");
 system("cp temp_out $file");
-system("cat $house_keeping/all_data >> temp_out");
+system("cat $house_keeping/all_data~ >> temp_out");
 system("mv temp_out $house_keeping/all_data");
 
 
