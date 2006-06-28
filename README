@@ -33,13 +33,13 @@ Current setting of directories are:
 
 3. gather rad zone passage information:
 	
-	perl $bin_dir/sci_run_add_to_rad_zone_list.perl  yyyy:mm:dd:hh:mm 
+	perl $bin_dir/sci_run_add_to_rad_zone_list.perl  <input_file>
 
-	where  yyyy:mm:dd:hh:mm is the interruption starting date/time 
-	       (e.g., 2006:03:20:10:30).
+	where  <input_file> is the file made in the step 1, and containing 
+               starting time e.g., 2006:03:20:10:30 .
 
    this will create rad_zone_list, which gives radiation zone information around the
-   interruption.
+   interruption. if there are multiple entries, this will add them automatically.
 
 4. add the data in input_file to "all_data" (this file is in $house_keeping). 
    To do this, run:

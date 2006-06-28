@@ -5,7 +5,7 @@ TASK = Sci_run_interrupt
 
 include /data/mta4/MTA/include/Makefile.MTA
 
-BIN  = sci_run_add_to_rad_zone_list.perl sci_run_compute_gap.perl sci_run_ephin_plot_main.perl sci_run_find_hardness.perl sci_run_get_ephin.perl sci_run_get_rad_zone_info.perl sci_run_get_radiation_data.perl sci_run_print_html.perl sci_run_print_top_html.perl sci_run_rad_plot.perl sci_run_repeat.perl
+BIN  = sci_run_add_to_rad_zone_list.perl sci_run_compute_gap.perl sci_run_ephin_plot_main.perl sci_run_find_hardness.perl sci_run_get_ephin.perl sci_run_get_rad_zone_info.perl sci_run_get_radiation_data.perl sci_run_print_html.perl sci_run_print_top_html.perl sci_run_rad_plot.perl 
 
 DOC  = README
 

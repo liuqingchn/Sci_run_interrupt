@@ -24,101 +24,113 @@ $web_dir       = '/data/mta/www/mta_interrupt_test/';
 $house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
 #################################################################
 
+$file      = $ARGV[0];
+@time_list = ();
+
+open(FH, "$file");
+while(<FH>){
+	chomp $_;
+	@atemp = split(/\s+/, $_);
+	push(@time_list, $atemp[1]);
+}
+close(FH);
+
 #
 #--- a starting date of the interruption in yyyy:mm:dd:hh:mm (e.g., 2006:03:20:10:30)
 #
 
-$time = $ARGV[0];
+foreach $time (@time_list){
 
-@atemp = split(/:/, $time);
-$year  = $atemp[0];
-$month = $atemp[1];
-$date  = $atemp[2];
+	@atemp = split(/:/, $time);
+	$year  = $atemp[0];
+	$month = $atemp[1];
+	$date  = $atemp[2];
 
 #
 #--- date for the list
 #
 
-$list_date = "$year$month$date";
+	$list_date = "$year$month$date";
 
 #
 #--- change to DOM
 #
 
-find_dom();
+	find_dom();
 
 #
 #--- check radiation zones for 3 days before to 5 days after from the interruptiondate
 #
 
-$begin = $dom - 3;
-$end   = $dom + 5;
+	$begin = $dom - 3;
+	$end   = $dom + 5;
 
 #
 #--- read radiation zone infornation
 #
 
-open(FH, "$house_keeping/rad_zone_info");
+	open(FH, "$house_keeping/rad_zone_info");
 
-@status = ();
-@date   = ();
-$chk    = 0;
-$lst_st = '';
-$cnt    = 0;
-
-OUTER:
-while(<FH>){
-	chomp $_;
-	@atemp = split(/\s+/, $_);
-	if($chk == 0 && $atemp[0] =~ /ENTRY/i && $atemp[1] >= $begin){
-		push(@status, $atemp[0]);
-		push(@date,   $atemp[1]);
-		$chk++;
-		$last_st = $atemp[0];
-		$cnt++;
-	}elsif($chk > 0 && $atemp[1] >= $begin && $atemp[1] <= $end){
-		push(@status, $atemp[0]);
-		push(@date,   $atemp[1]);
-		$last_st = $atemp[0];
-		$cnt++;
-	}elsif($atemp[1] >= $end && $last_st =~ /EXIT/i){
-		last OUTER;
-	}elsif($atemp[1] >= $end && $last_st =~ /ENTRY/i){
-		push(@status, $atemp[0]);
-		push(@date,   $atemp[1]);
-		$cnt++;
-		last OUTER;
+	@status = ();
+	@date   = ();
+	$chk    = 0;
+	$lst_st = '';
+	$cnt    = 0;
+	
+	OUTER:
+	while(<FH>){
+		chomp $_;
+		@atemp = split(/\s+/, $_);
+		if($chk == 0 && $atemp[0] =~ /ENTRY/i && $atemp[1] >= $begin){
+			push(@status, $atemp[0]);
+			push(@date,   $atemp[1]);
+			$chk++;
+			$last_st = $atemp[0];
+			$cnt++;
+		}elsif($chk > 0 && $atemp[1] >= $begin && $atemp[1] <= $end){
+			push(@status, $atemp[0]);
+			push(@date,   $atemp[1]);
+			$last_st = $atemp[0];
+			$cnt++;
+		}elsif($atemp[1] >= $end && $last_st =~ /EXIT/i){
+			last OUTER;
+		}elsif($atemp[1] >= $end && $last_st =~ /ENTRY/i){
+			push(@status, $atemp[0]);
+			push(@date,   $atemp[1]);
+			$cnt++;
+			last OUTER;
+		}
 	}
-}
-close(FH);
+	close(FH);
 
 #
 #--- print out the radiation zone data
 #
 
-open(OUT, '>temp_zone');
-print OUT "$list_date\t";
-$i = 0;
-while($i < $cnt){
-	print OUT "($date[$i], ";
-	$i++;
-	if($i < $cnt -1){
-		print OUT "$date[$i]):";
-	}else{
-		print OUT "$date[$i])\n";
+	open(OUT, '>temp_zone');
+	print OUT "$list_date\t";
+	$i = 0;
+	while($i < $cnt){
+		print OUT "($date[$i], ";
+		$i++;
+		if($i < $cnt -1){
+			print OUT "$date[$i]):";
+		}else{
+			print OUT "$date[$i])\n";
+		}
+		$i++;
 	}
-	$i++;
+	
+	open(FH, "$house_keeping/rad_zone_list");
+	while(<FH>){
+		print OUT "$_";
+	}
+	close(FH);
+	close(OUT);
+	
+	system("mv $house_keeping/rad_zone_list $house_keeping/rad_zone_list~");
+	system("mv temp_zone $house_keeping/rad_zone_list");
 }
-
-open(FH, "$house_keeping/rad_zone_list");
-while(<FH>){
-	print OUT "$_";
-}
-close(FH);
-close(OUT);
-
-system("mv $house_keeping/rad_zone_list $house_keeping/rad_zone_list~");
-system("mv temp_zone $house_keeping/rad_zone_list");
 
 ###############################################################################
 ### find_dom: find DOM from year:month:mdate:hour:min                       ###
