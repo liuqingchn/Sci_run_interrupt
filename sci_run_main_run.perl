@@ -100,7 +100,7 @@ foreach $ent (@line_list){
 	system("perl $bin_dir/sci_run_print_top_html.perl all_data");
 }
 
-######## system("rm ./dir_list $input_file");
+system("rm ./dir_list $input_file");
 
 
 

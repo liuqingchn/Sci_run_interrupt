@@ -30,8 +30,22 @@ Current setting of directories are:
 	perl $bin_dir/sci_run_get_radiation_data.perl
 
    which run once a day (cronjob) to update the files.
+   Note, rad_data<yyyy> is updated by sci_run_get_radiation_data.perl daily, but
+   the data is 2 days behind from the today's date.
 
-3. gather rad zone passage information:
+
+
+3a. run everything with one script:
+
+	perl $bin_dir/sci_run_main_run.perl input_file
+	
+    and skip to Step 10.
+
+or
+
+3b.  run each script separtely. 
+
+	first, gather rad zone passage information:
 	
 	perl $bin_dir/sci_run_add_to_rad_zone_list.perl  <input_file>
 
