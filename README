@@ -30,6 +30,9 @@ Current setting of directories are:
 	perl $bin_dir/sci_run_get_radiation_data.perl
 
    which run once a day (cronjob) to update the files.
+
+	0 5 * * * cd /data/mta/Script/Interrupt/; /data/mta4/MTA/bin/sci_run_wrap_script 
+
    Note, rad_data<yyyy> is updated by sci_run_get_radiation_data.perl daily, but
    the data is 2 days behind from the today's date.
 
