@@ -2,21 +2,29 @@
 
 #########################################################################################
 #											#
-# 	ephin_plot_main.perl: a drving script to extract and plot ephin data.		#
+# 	sci_run_ephin_plot_main.perl: a drving script to extract and plot ephin data.	#
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
 #		this script needs another script: get_ephin.perl			#
 #											#
-#		last update: Jun 27, 2006						#
+#		last update: Jun 28, 2006						#
 #											#
 #########################################################################################
 
+#################################################################
 #
-#--- set directories
+#--- setting directories
 #
 
-$bin_dir = '/data/mta/MTA/bin/';
+$bin_dir       = '/data/mta4/MTA/bin/';
+$data_dir      = '/data/mta4/MTA/data/';
+$web_dir       = '/data/mta/www/mta_interrupt/';
+$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+
+$web_dir       = '/data/mta/www/mta_interrupt_test/';
+$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
+#################################################################
 
 #
 #-- input file name
@@ -64,16 +72,15 @@ for($k = 0; $k < $total; $k++){
 #--- call get_ephin.perl which actually extracts ephin data from archieve
 #
 
-	system("perl ./get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
-####	system("perl $bin_dir/get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
+	system("perl $bin_dir/get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
 
-	$new_name  = './Ephin_plot/'."$name[$k]".'_eph.gif';
-	$new_name2 = "$name[$k]".'_eph.ps';
+	$data_file_name = "$web_dir".'/Data_dir/'."$name[$k]".'_eph.txt';
+	system("mv ephin_data.txt $data_file_name");
 
-	$data_file_name = "$name[$k]".'_eph.txt';
-	system("mv ephin_data.txt ./Data_dir/$data_file_name");
+	$gif_name       = "$web_dir".'/Ephin_plot/'."$name[$k]".'_eph.gif';
+	$ps_name        = "$web_dir".'/Ps_dir/'."$name[$k]".'_eph.ps';
 
-	system("echo ''|gs -sDEVICE=ppmraw  -r256x256 -q -NOPAUSE -sOutputFile=-  pgplot.ps| $bin_dir/pnmflip -r270 |$bin_dir/ppmtogif > $new_name");
+	system("echo ''|gs -sDEVICE=ppmraw  -r256x256 -q -NOPAUSE -sOutputFile=-  pgplot.ps| $bin_dir/pnmflip -r270 |$bin_dir/ppmtogif > $gif_name");
 
-	system("mv pgplot.ps ./Ps_dir/$new_name2");
+	system("mv pgplot.ps $ps_name");
 }

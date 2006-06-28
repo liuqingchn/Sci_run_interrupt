@@ -18,13 +18,13 @@
 #--- setting directories
 #
 
-$bin_dir       = /data/mta4/MTA/bin/;
-$data_dir      = /data/mta4/MTA/data/;
-$web_dir       = /data/mta/www/mta_interrupt/;
-$house_keeping = /data/mta/www/mta_interrupt/house_keeping/;
+$bin_dir       = '/data/mta4/MTA/bin/';
+$data_dir      = '/data/mta4/MTA/data/';
+$web_dir       = '/data/mta/www/mta_interrupt/';
+$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
 
-$web_dir       = /data/mta/www/mta_interrupt_test/;
-$house_keeping = /data/mta/www/mta_interrupt_test/house_keeping/;
+$web_dir       = '/data/mta/www/mta_interrupt_test/';
+$house_keeping = '/data/mta/www/mta_interrupt_test/house_keeping/';
 #################################################################
 
 #

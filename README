@@ -26,8 +26,8 @@ Current setting of directories are:
 
     exist, and they are updated. These data are created by
 
-	perl $bi_dir/sci_run_get_rad_zone_info.perl 
-	perl $bi_dir/sci_run_get_radiation_data.perl
+	perl $bin_dir/sci_run_get_rad_zone_info.perl 
+	perl $bin_dir/sci_run_get_radiation_data.perl
 
    which run once a day (cronjob) to update the files.
 
@@ -64,7 +64,7 @@ Current setting of directories are:
 
 6. plot ephin data
 
-	perl $bin_dir/sci_run_repeat.perl
+	perl $bin_dir/sci_run_ephin_plot_main.perl
 		input  input_file (from 1)
 	       	user name	---- user name and password for arc4gl
 	       	pass word
