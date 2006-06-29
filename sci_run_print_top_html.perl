@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jun 28, 2006							#
+#		last update: Jun 29, 2006							#
 #												#
 #################################################################################################
 
@@ -43,6 +43,9 @@ if($date_list eq ''){
 }
 
 chomp $date_list;
+if($date_list =~ /all_data/){
+	$date_list = "$house_keeping/$date_list";
+}
 
 open(FH, "$date_list");
 
