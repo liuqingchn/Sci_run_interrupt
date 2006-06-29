@@ -51,16 +51,16 @@ if($day < 1){
 	}
 	if($mon == 1 || $mon == 3 || $mon == 5 ||  $mon == 7 || $mon == 8
 		 || $mon == 10 || $mon == 12){
-			$day = 31;
+			$day = 31 - $day;
 	}elsif($mon == 2){
 		$chk = 4.0 * int (0.25 * $year);
 		if($year == $chk){
-			$day = 29;
+			$day = 29 - $day;
 		}else{
-			$day = 28;
+			$day = 28 - $day;
 		}
 	}else{
-		$day = 30;
+		$day = 30 - $day;
 	}
 }
 
