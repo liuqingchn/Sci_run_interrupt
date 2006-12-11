@@ -368,8 +368,11 @@ pgptxt($irpt_start, $ym, 0, left, interruption);
 
 pgmove($irpt_end, $ymin);
 pgdraw($irpt_end, $ymax);
-pgmove($xmin, 1.0);
-pgdraw($xmax, 1.0);
+#pgmove($xmin, 1.0);
+#pgdraw($xmax, 1.0);
+pgmove($xmin, 1.301);
+pgdraw($xmax, 1.301);
+
 pgsci(1);
 
 pgsch(4);
