@@ -8,7 +8,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jun 29, 2006						#
+#		last update: May 30, 2007						#
 #											#
 #########################################################################################
 
@@ -31,7 +31,7 @@ $house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
 #
 
 $year = $ARGV[0];
-$mon  = $ARGV[0];
+$mon  = $ARGV[1];
 
 if($year =~ /\d/ && $mon =~ /\d/){
 	$umon = $mon--;
@@ -117,25 +117,37 @@ foreach $ent (@line_save){
 }
 
 #
+#--- sort by time
+#
+
+@save = ();
+foreach $ent (@rad_zone){
+	@atemp  = split(/\s+/, $ent);
+	$line = "$atemp[1]\t$atemp[2]\t$atemp[0]";
+	push(@save, $line);
+}
+
+@temp = sort{$a<=>$b}@save;
+
+#
 #--- remove duplicates
 #
 
-$first = shift(@rad_zone);
-@new = ($first);
+$chk = shift(@temp);
+@new = ("$chk");
 OUTER:
-foreach $ent (@rad_zone){
-	@atemp = split(/\s+/, $ent);
-	foreach $comp (@new){
-		@btemp = split(/\s+/, $comp);
-		if($atemp[1] == $btemp[1]){
-			next OUTER;
-		}
+foreach $ent (@temp){
+	if($ent =~ /$chk/){
+		next OUTER;
 	}
 	push(@new, $ent);
+	$chk = $ent;
 }
+	
 
 #
 #---  before print out the data, make sure that no two enter(or exit) occurs 
+#---  consequtively
 #
 
 $ind = '';
@@ -145,12 +157,12 @@ open(OUT, ">$house_keeping/rad_zone_info");
 OUTER:
 foreach $ent (@new){
 	@atemp = split(/\s+/, $ent);
-	if($atemp[0] =~ /$ind/){
-		$ind = $atemp[0];
+	if($atemp[2] =~ /$ind/){
+		$ind = $atemp[2];
 		next OUTER;
 	}
-	$ind = $atemp[0];
-	print OUT "$ent\n";
+	$ind = $atemp[2];
+	print OUT "$atemp[2]\t$atemp[0]\t$atemp[1]\n";
 }
 
 ###############################################################################
