@@ -8,7 +8,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: May 30, 2007						#
+#		last update: Jul 20, 2009						#
 #											#
 #########################################################################################
 
@@ -21,7 +21,8 @@
 $bin_dir       = '/data/mta4/MTA/bin/';
 $data_dir      = '/data/mta4/MTA/data/';
 $web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+#$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+$house_keeping = './';
 
 #################################################################
 
@@ -77,21 +78,32 @@ $mon2  = $cmon;
 #
 
 $name = "$mon1".'*';
-system("cat /data/mpcrit1/mplogs/$year1/$name/ofls/*dot|grep RADZONE >  ./zout");
+system("cat /data/mpcrit1/mplogs/$year1/$name/ofls/*dot|grep RADENTR  >  ./zout1");
+system("cat /data/mpcrit1/mplogs/$year1/$name/ofls/*dot|grep RADEXIT  >  ./zout2");
 
 $name = "$mon2".'*';
-system("cat /data/mpcrit1/mplogs/$year2/$name/ofls/*dot|grep RADZONE >> ./zout");
+system("cat /data/mpcrit1/mplogs/$year2/$name/ofls/*dot|grep RADENTRY >> ./zout1");
+system("cat /data/mpcrit1/mplogs/$year2/$name/ofls/*dot|grep RADEXIT  >> ./zout2");
+
 
 #
 #---- extract needed information (entry/exit and date)
 #
 
-$infile    = 'zout';
+$infile    = 'zout1';
 @line_save = ();
 
 clean_entry();
 
-system("rm zout");
+@line_save1 = @line_save;
+system("rm zout1");
+
+$infile    = 'zout2';
+
+clean_entry();
+
+@line_save2 = @line_save;
+system("rm zout2");
 
 #
 #--- read the past data
@@ -174,14 +186,16 @@ sub clean_entry{
 	open(FH, "$infile");
 	while(<FH>){
 		chomp $_;
-		$_ =~ s/ATS\,2_RADZONE_//g;
-		$_ =~ s/\,TIME=/<>/g;
 		@atemp = split(/\s+/, $_);
-		$line = $atemp[0];
-		@atemp = split(/<>/, $line);
-		$time  = $atemp[1];
+		@btemp = split(/=/, $atemp[0]);
+		$time  = $btemp[1];
 		find_dom();
-		$line = "$atemp[0]\t$dom\t$atemp[1]";
+		if($_ =~ /RADENTRY/i){
+			$act = 'ENTRY';
+		}else{
+			$act = 'EXIT';
+		}
+		$line = "$act\t$dom\t$time";
 		push(@line_save, $line);
 	}
 	close(FH);
