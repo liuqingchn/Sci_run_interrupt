@@ -5,7 +5,7 @@ mkdir param
 
 source /home/mta/bin/reset_param
 
-setenv PFILES "${PDIRS}:${SYSPFILES}"
+setenv PFILES "${PDIRS}"
 set path = (/home/ascds/DS.release/bin/  $path)
 
 perl /data/mta4/MTA/bin/sci_run_get_rad_zone_info.perl
