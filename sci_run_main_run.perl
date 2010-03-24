@@ -93,6 +93,12 @@ foreach $ent (@line_list){
 
 	system("/opt/local/bin/perl $bin_dir/sci_run_find_hardness.perl $input_file");
 
+	system("/opt/local/bin/perl $bin_dir/compute_ephin_avg.perl $input_file");
+
+	system("/opt/local/bin/perl $bin_dir/extract_goes.perl $input_file");
+
+	system("/opt/local/bin/perl $bin_dir/ plot_first_page_fig.perl $input_file");
+
 	system("/opt/local/bin/perl $bin_dir/sci_run_print_html.perl $input_file");
 
 	system("/opt/local/bin/perl $bin_dir/sci_run_print_top_html.perl all_data");

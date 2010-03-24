@@ -431,7 +431,7 @@ sub print_ind_html{
 #--------printint sub html page
 #
 
-	$template  = `cat ./sub_html_template`;
+	$template  = `cat /data/mta/Script/Interrupt/Sci_run_interrupt/sub_html_template`;
 
 	$template  =~ s/#header_title#/$sname/g;
 	$template  =~ s/#main_title#/$sname/g;

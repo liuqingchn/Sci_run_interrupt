@@ -79,6 +79,11 @@ or
 		$web_dir/Tiny_plot/20060320_tiny.gif
 		postscript versions are also kept in $web_dir/Ps_dir
 
+	Compute statistics of the radiations
+
+	perl $bin_dir/sci_run_find_hardness.perl  
+	input: all_data (no need to specify the path)
+
 6. plot ephin data
 
 	perl $bin_dir/sci_run_ephin_plot_main.perl
@@ -92,12 +97,22 @@ or
 	Output: $web_dir/Ephin_plot/20060320_eph.gif
 	        a postscript version is also kept in $web_dir/Ps_dir
 
-7. Compute statistics of the radiations
+	compute ephin stat:
 
-	perl $bin_dir/sci_run_find_hardness.perl  
-	input: all_data (no need to specify the path)
+	perl $bin_dir/compute_ephin_avg.perl 
+		input input_file (from 1)
+
+7. extract goes-11 data and creates a plot
+
+	/opt/local/bin/perl extract_goes.perl 
+		input input_file (from 1)
 
 8. Print indivisual html page
+
+	first createa a front page plot
+	
+	/opt/local/bin/perl plot_first_page_fig.perl 
+		input input_file (from 1);
 
 	perl $bin_dir/sci_run_print_html.perl
 	input: input_file
