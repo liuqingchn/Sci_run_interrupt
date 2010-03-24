@@ -8,7 +8,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jul 20, 2009						#
+#		last update: Mar 22, 2010						#
 #											#
 #########################################################################################
 
@@ -21,8 +21,8 @@
 $bin_dir       = '/data/mta4/MTA/bin/';
 $data_dir      = '/data/mta4/MTA/data/';
 $web_dir       = '/data/mta/www/mta_interrupt/';
-#$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
-$house_keeping = './';
+$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+#$house_keeping = './';
 
 #################################################################
 
@@ -223,6 +223,12 @@ sub find_dom{
                         $dom++;
                 }
                 if($btemp[0] > 2012) {
+                        $dom++;
+                }
+                if($btemp[0] > 2016) {
+                        $dom++;
+                }
+                if($btemp[0] > 2020) {
                         $dom++;
                 }
         }

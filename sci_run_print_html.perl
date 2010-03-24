@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jun 28, 2006							#
+#		last update: Mar 24, 2010							#
 #												#
 #################################################################################################
 
@@ -120,6 +120,13 @@ $in_file   = $date_list;
 $out_file  = "$web_dir".'/time_order.html';
 
 print_sub_html();
+
+#
+#--- duplicate time ordered page to the initial page "rad_interrupt.html
+#
+
+$out_file2 = "$web_dir".'/rad_interrupt.html';
+system("cp $out_file $out_file2");
 
 $print_chk = 'no';
 
@@ -235,88 +242,115 @@ sub print_sub_html{
 	
 	open(OUT, ">$out_file");
 	
-	print OUT '<HTML><BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#00CCFF" ',"\n";
-	print OUT 'VLINK="#B6FFFF" ALINK="#FF0000", background ="./stars.jpg">',"\n";
-	
-	print OUT '<title> ACE Data Plots for Periods Which Interrupted Science Runs </title>',"\n";
-	
-	print OUT '<CENTER><H1>ACE Data Plots for Periods  Which Interrupted Science Runs',"\n";
-	print OUT '</H1></CENTER>',"\n";
-	
-	print OUT '<CENTER><H1>Last Updated ';
-	print OUT "$hyear-$hmonth-$hmday  ";
-	print OUT "\n";
-	print OUT '</CENTER></H1>',"\n";
-	
-	print OUT '<h3>',"\n";
-	print OUT 'ACE radiation data are plotted around periods when science runs ';
-	print OUT 'were interrupted.',"\n";
-	print OUT 'Plots start exactly 2 days before the interruption started.',"\n";
-	print OUT 'The top panel shows differential fluxes of electrons 38-53 and 175-315',"\n";
-	print OUT '(particles/cm2-s-ster-MeV), the middle panel shows differential fluxes of',"\n";
-	print OUT 'protons 47-65, 112-187, and 310-580 (particles/cm2-s-ster-MeV), and the',"\n";
-	print OUT 'bottom panel shows anisotropy ratio.',"\n";
-	print OUT 'The original data are prepared by the U.S. Dept. of Commerce, NOAA, Space ',"\n";
-	print OUT 'Environment Center.',"\n";
-	print OUT "\<a href=\'http://asc.harvard.edu/mta/ace.html\'\>";
-	print OUT "Real time ACE Observation\</a\> ","\n";
-	print OUT 'is also available.',"\n";
-	print OUT '</h3>',"\n";
-	print OUT "\n";
-	print OUT "\n";
-	print OUT '<h2> Click a plot to enlarge</h2>',"\n";
-	print OUT '<p>',"\n";
-	print OUT 'Note: Data points in 2000 Data are one hour average. All others are ',"\n";
-	print OUT '5 min average.',"\n";
+	print OUT '<!DOCTYPE html PUBLIC "-//W3C//DTD html 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">',"\n";
+	print OUT '<html>',"\n";
+	print OUT '<head>',"\n";
+	print OUT '<!-- #### CSS STYLE SHEET FILE #### -->',"\n";
+	print OUT '',"\n";
+    	print OUT '<link rel="stylesheet" type="text/css" href="http://asc.harvard.edu/mta/REPORTS/Template/mta_monthly.css" />',"\n";
+	print OUT '',"\n";
+	print OUT '</head>',"\n";
+	print OUT '',"\n";
+	print OUT '<title> Radiation Count Rate Plots for Periods Which Interrupted Science Runs </title>',"\n";
+	print OUT '</head>',"\n";
+	print OUT '',"\n";
+	print OUT '<body>',"\n\n";
+	print OUT '<h2>',"\n";
+	print OUT 'Radiation Count Rate Plots for Periods Which Interrupted Science Runs',"\n";
+	print OUT '</h2>',"\n";
+	print OUT '<p style="text-align:right;font-weight:bold">',"\n";
+	print OUT 'Last Updated: ', "$hyear-$hmonth-$hmday\n";
 	print OUT '</p>',"\n";
-	
-	print OUT '<font size=+1>',"\n";
-	print OUT '<b>',"\n";
+	print OUT '',"\n";
+	print OUT '<p style="font-weight:bold;padding-left:4em;padding-right:6em">',"\n";
+	print OUT 'The following plots are P4 proton count rate (15.0 -  40.0 MeV protons Counts/cm2 sec sr MeV)',"\n";
+	print OUT 'around science runs were interrupted.  Plots start exactly 2 days before the interruption',"\n";
+	print OUT 'started, and fnish 5 days after. ACE radiation data and other proton/electron count rate data',"\n";
+ 	print OUT 'for the same periods can be found by clicking one of the plots, which opens up the page for',"\n";
+	print OUT 'the specific period.',"\n";
+	print OUT '</p>',"\n";
+
+	print OUT '<p style="font-weight:bold;padding-left:4em;padding-right:6em">',"\n";
+	print OUT 'If a plot is noted with "auto", the science run was automatically interrupted because the high radiation',"\n";
+	print OUT 'tripped one of the criteria. If it is noted with "manual", it was done by an operator'."'".'s judgement.',"\n";
+	print OUT '</pr>',"\n";
+
+	print OUT '<p style="font-weight:bold;padding-left:4em;padding-right:6em">',"\n";
+	print OUT 'Note: Data points in 2000 Data are one hour average. All others are 5 min average.',"\n";
+	print OUT '</p>',"\n";
+
+	print OUT '<hr />',"\n";
+
+
 	if($which eq 'auto'){
-		print OUT '<a href="time_order.html">Time Ordered List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<font color=yellow>Auto Shutdown List</font>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="manu_shut.html">Manually Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="hard_order.html">Hardness Ordered List</a>',"\n";
-		print OUT '<br>',"\n";
+		print OUT '<table border=0 cellpadding=3 cellspacing=3>',"\n";
+		print OUT '<tr><td>',"\n";
+		print OUT '<a href="time_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Time Ordered List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<em class="lime" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Auto Shutdown List</em>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="manu_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Manually Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="hard_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Hardness Ordered List</a>',"\n";
+		print OUT '</td></tr></table>',"\n";
 	}elsif($which eq 'manual'){
-		print OUT '<a href="time_order.html">Time Ordered List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="auto_shut.html">Auto Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<font color=yellow>Manually Shutdown List</font>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="hard_order.html">Hardness Ordered List</a>',"\n";
-		print OUT '<br>',"\n";
+		print OUT '<table border=0 cellpadding=3 cellspacing=3>',"\n";
+		print OUT '<tr><td>',"\n";
+		print OUT '<a href="time_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Time Ordered List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="auto_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Auto Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<em class="lime" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Manually Shutdown List</em>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="hard_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Hardness Ordered List</a>',"\n";
+		print OUT '</td></tr></table>',"\n";
 	}elsif($which eq 'hardness'){
-		print OUT '<a href="time_order.html">Time Ordered List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="auto_shut.html">Auto Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="manu_shut.html">Manually Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<font color=yellow>Hardness Ordered List</font>',"\n";
-		print OUT '<br><br>',"\n";
+		print OUT '<table border=0 cellpadding=3 cellspacing=3>',"\n";
+		print OUT '<tr><td>',"\n";
+		print OUT '<a href="time_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Time Ordered List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="auto_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Auto Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="manu_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Manually Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<em class="lime" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Hardness Ordered List</em>',"\n";
+		print OUT '</td></tr></table>',"\n";
+		print OUT '<p style="font-weight:bold">',"\n";
 		print OUT 'Hardness here is defined by the maximum ratio of P47/P1060',"\n";
-		print OUT '<br>',"\n";
+		print OUT '</p>',"\n";
 	}elsif($which eq 'time_order'){
-		print OUT '<font color=yellow>Time Ordered List</font>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="auto_shut.html">Auto Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="manu_shut.html">Manually Shutdown List</a>',"\n";
-		print OUT ' : ',"\n";
-		print OUT '<a href="hard_order.html">Hardness Ordered List</a>',"\n";
-		print OUT '<br>',"\n";
+		print OUT '<table border=0 cellpadding=3 cellspacing=3>',"\n";
+		print OUT '<tr><td>',"\n";
+		print OUT '<em class="lime" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Time Ordered List</em>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="auto_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Auto Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="manu_shut.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Manually Shutdown List</a>',"\n";
+		print OUT '</td><td>',"\n";
+		print OUT '<a href="hard_order.html" style="font-weight:bold;font-size:120%">',"\n";
+		print OUT 'Hardness Ordered List</a>',"\n";
+		print OUT '</td></tr></table>',"\n";
 
 	}
-	print OUT '</font>',"\n";
-	print OUT '</b>',"\n";
 
 
-	print OUT '<ul>',"\n";
+
+	print OUT '<ul style="padding-bottom:30px">',"\n";
 	
 	for($k = 0; $k < $total; $k++){
         	$sname           = $name[$k];
@@ -342,36 +376,47 @@ sub print_sub_html{
         	$int_method      = $method[$k];
 		$data_file_name  = "$sname".'_dat.txt';
 		$data_file_name2 = "$sname".'_eph.txt';
+		$data_file_name3 = "$sname".'_goes.txt';
 		$note_file_name  = "$sname".'.txt';
 	
 		$html_name       = "$sname".'.html';
 		$stat_name       = "$sname".'_stat';
 		$gif_name        = "$sname".'.gif';
 		$ephin_gif       = "$sname".'_eph.gif';
-		$tiny_name       = "$sname".'_tiny.html';
-		$tiny_gif        = "$sname".'_tiny.gif';
+		$goes_gif        = "$sname".'_goes.gif';
+		$intro_gif       = "$sname".'_intro.gif';
 	
-		print  OUT '<li>',"\n";
-		print  OUT '<b>', "Science Run Stop: $time\tStart: $time2\t";
-		print  OUT "Interruption: ";
+		print  OUT '<li style="text-align:left;font-weight:bold;padding-bottom:20px">',"\n";
+		print  OUT '<table border=0 cellpadding=3 cellspacing=3><tr>',"\n";
+		print  OUT "<td>Science Run Stop: </td><td> $time</td><td>Start:  </td><td>$time2</td>";
+		print  OUT "<td>Interruption: </td><td>";
 		printf OUT  "%4.1f",$interrupt_time;
-		print  OUT "ks\t$int_method",'</b>',"\n";
+		print  OUT "ks</td><td>$int_method</td>","\n";
+		print  OUT '</tr></table>',"\n";
 	
 		print  OUT "\<a href=\'./Html_dir/$html_name\'\>";
-		print  OUT "\<img src = \'./Tiny_plot/$tiny_gif\'";
+		print  OUT "\<img src = \'./Intro_plot/$intro_gif\'";
 		print  OUT "width=\'100%\' height=\'20%\'\>\</a\>\n";
 	
 		print  OUT "\<a href=\'./Data_dir/$data_file_name\'\>ACE RTSW EPAM Data\</a\>,\n";
 		print  OUT "\<a href=\'./Data_dir/$data_file_name2\'\>Ephin Data\</a\>,\n";
+		print  OUT "\<a href=\'./Data_dir/$data_file_name3\'\>GOES Data\</a\>,\n";
 		print  OUT "\<a href=\'./Note_dir/$note_file_name\'\>Note\</a\>,\n";
 		print  OUT '<br>',"\n";
 		print  OUT '<spacer type=vertical size=10>',"\n";
+		print  OUT '</li>',"\n";
 	
 		if($print_chk eq  'yes'){
 			print_ind_html();
 		}
 	}
-	print OUT  '</ul>',"\n";
+	print OUT '</ul>',"\n";
+	print OUT '<hr />',"\n";
+	print OUT '<p style="float:right">',"\n";
+	print OUT 'If you have any questions about this page, please contact:';
+	print OUT '<a href="mailto:isobe@head.cfa.harvard.edu">isobe@head.cfa.harvard.edu</a>',"\n";
+	print OUT '</p>',"\n";
+
 	print OUT '</body>',"\n";
 	print OUT '</html>',"\n";
 	close(OUT);
@@ -385,50 +430,40 @@ sub print_ind_html{
 #
 #--------printint sub html page
 #
+
+	$template  = `cat ./sub_html_template`;
+
+	$template  =~ s/#header_title#/$sname/g;
+	$template  =~ s/#main_title#/$sname/g;
+	$template  =~ s/#sci_run_stop#/$time/g;
+	$template  =~ s/#sci_run_start#/$time2/g;
+	$template  =~ s/#interruption#/$interrupt_time/g;
+	$template  =~ s/#trigger#/$int_method/g;
+	$template  =~ s/#note_name#/$note_file_name/g;
+
+	$ace_data  = "$name".'_dat.txt';
+	$template  =~ s/#ace_data#/$ace_data/g;
+	$ace_table = `cat $web_dir/Stat_dir/$stat_name`; 
+	$template  =~ s/#ace_table#/$ace_table/g;
+	$template  =~ s/#ace_plot#/$gif_name/g;
+
+	$eph_data  = "$name".'_eph.txt';
+	$template  =~ s/#eph_data#/$eph_data/g;
+	$eph_in    = "$name".'_txt';
+	$eph_table = `cat $web_dir/Ephin_plot/$eph_in`; 
+	$template  =~ s/#eph_table#/$eph_table/g;
+	$template  =~ s/#eph_plot#/$ephin_gif/g;
+
+	$goes_data = "$name".'_goes.txt';
+	$template  =~ s/#goes_data#/$goes_data/g;
+	$goes_in   = "$name".'_text';
+	$goes_table= `cat $web_dir/GOES_plot/$goes_in`; 
+	$template  =~ s/#goes_table#/$goes_table/g;
+	$template  =~ s/#goes_plot#/$goes_gif/g;
+
 	open(OUT2, ">$web_dir/Html_dir/$html_name");
-	print  OUT2 '<HTML><BODY TEXT="#FFFFFF" BGCOLOR="#000000" LINK="#00CCFF" ',"\n";
-	print  OUT2 'VLINK="#B6FFFF" ALINK="#FF0000", background ="./stars.jpg">',"\n";
-
-	print  OUT2 '<title>',"$sname",'</title>',"\n ";
-	print  OUT2 '<center><h1>',"$time ",'Science Run Interruption</h1></center>';
-	print  OUT2 "\n";
-	print  OUT2 '<b>', "Science Run Stop:  $time\n";
-	print  OUT2 '<br>',"\n";
-	print  OUT2        "Science Run Start: $time2\n";
-	print  OUT2 '<br>',"\n";
-	print  OUT2 "Interruption:";
-	printf OUT2 "%4.1f",$interrupt_time;
-	print  OUT2 "ks\n";
-	print  OUT2 '<br>';
-	print  OUT2 "Triggered by: $int_method",'</b>',"\n";
-
-	print  OUT2 '<br>',"\n";
-	print  OUT2 '<pre>',"\n";
-
-	open(IN, "$web_dir/Stat_dir/$stat_name");
-	while(<IN>){
-		print OUT2 "$_";
-	}
-	close(IN);
-	print  OUT2 '</pre>',"\n";
-	print  OUT2 '<br>',"\n";
-	print  OUT2 '<font size=+1><b>',"\n";
-	print  OUT2 "\<a href=\'../Note_dir/$note_file_name\'\>Note\</a\>,\n";
-	print  OUT2 '</font></b>';
-	print  OUT2 '<br>',"\n";
-	print  OUT2 '<br>',"\n";
-	print  OUT2 'Red horizontal lines indicate  SCS 107 limits<br>';
-	print  OUT2 'Purple hatched areas indicate that the satellite is in the radiation belt<br>';
-	print  OUT2 '<br><br>';
-	print  OUT2 "\<img src = \'../Main_plot/$gif_name\'  width=\'100%\'\>\n";
-	print  OUT2 '<br>',"\n";
-	print  OUT2 "\<img src = \'../Ephin_plot/$ephin_gif\' width=\'100%\'\>\n";
 	
-	print  OUT2 '<br>',"\n";
-	print  OUT2 "\<a href=\'../rad_interrupt.html\'\>Back to Main Page</a>\n";
-
-	print  OUT2 '</body>',"\n";
-	print  OUT2 '</html>',"\n";
+	print OUT2 "$template";
 
 	close(OUT2);
 }

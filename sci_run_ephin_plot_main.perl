@@ -8,7 +8,7 @@
 #											#
 #		this script needs another script: get_ephin.perl			#
 #											#
-#		last update: Jun 28, 2006						#
+#		last update: Feb 01, 2010						#
 #											#
 #########################################################################################
 
@@ -92,7 +92,7 @@ for($k = 0; $k < $total; $k++){
 #--- call get_ephin.perl which actually extracts ephin data from archieve
 #
 
-	system("perl $bin_dir/sci_run_get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
+	system("/opt/local/bin/perl $bin_dir/sci_run_get_ephin.perl $start[$k] $end[$k] $usr $pword $name[$k]");
 
 	$data_file_name = "$web_dir".'/Data_dir/'."$name[$k]".'_eph.txt';
 	system("mv ephin_data.txt $data_file_name");

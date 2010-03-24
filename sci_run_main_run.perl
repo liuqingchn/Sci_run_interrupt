@@ -8,7 +8,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jun 29, 2006							#
+#		last update: Feb 01, 2010							#
 #												#
 #################################################################################################
 
@@ -83,19 +83,19 @@ foreach $ent (@line_list){
 	print OUT "$ent\n";
 	close(OUT);
 
-	system("perl $bin_dir/sci_run_add_to_rad_zone_list.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_add_to_rad_zone_list.perl $input_file");
 
-	system("perl $bin_dir/sci_run_compute_gap.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_compute_gap.perl $input_file");
 
-	system("perl $bin_dir/sci_run_rad_plot.perl $rad_data $file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_rad_plot.perl $rad_data $file");
 
-	system("perl $bin_dir/sci_run_ephin_plot_main.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_ephin_plot_main.perl $input_file");
 
-	system("perl $bin_dir/sci_run_find_hardness.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_find_hardness.perl $input_file");
 
-	system("perl $bin_dir/sci_run_print_html.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/sci_run_print_html.perl $input_file");
 
-	system("perl $bin_dir/sci_run_print_top_html.perl all_data");
+	system("/opt/local/bin/perl $bin_dir/sci_run_print_top_html.perl all_data");
 }
 
 system("rm ./dir_list $input_file");
