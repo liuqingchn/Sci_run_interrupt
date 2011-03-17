@@ -8,7 +8,7 @@ use PGPLOT;
 #											#
 #		author: t. siboe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update Mar.24 2010							#
+#		last update Mar 17, 2011						#
 #											#
 #########################################################################################
 
@@ -17,18 +17,20 @@ use PGPLOT;
 #--- setting directories
 #
 
-open(FH, './dir_list');
-@list = ();
+
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+
+@atemp = ();
 while(<FH>){
         chomp $_;
-        push(@list, $_);
+        push(@atemp, $_);
 }
 close(FH);
 
-$bin_dir       = $list[0];
-$data_dir      = $list[1];
-$web_dir       = $list[2];
-$house_keeping = $list[3];
+$bin_dir       = $atemp[0];
+$data_dir      = $atemp[1];
+$web_dir       = $atemp[2];
+$house_keeping = $atemp[3];
 
 ################################################################
 
@@ -71,11 +73,12 @@ while(<FH>){
 	if($atemp[0] !~ /\d/){
 		next OUTER;
 	}
-	if($atemp[1] <= 0){
-		next OUTER;
-	}
+#	if($atemp[1] <= 0){
+#		next OUTER;
+#	}
+	$p4d    = (log($atemp[1]))/2.302585093;
 	push(@time, $atemp[0]);
-	push(@p4,   $atemp[1]);
+	push(@p4,  $p4d);
 	$pcnt++;
 }
 close(FH);

@@ -11,3 +11,8 @@ set path = (/home/ascds/DS.release/bin/  $path)
 perl /data/mta4/MTA/bin/sci_run_get_rad_zone_info.perl
 
 perl /data/mta4/MTA/bin/sci_run_get_radiation_data.perl
+
+chgrp mtagroup /data/mta_www/mta_interrupt/* 
+chgrp mtagroup /data/mta_www/mta_interrupt/*/* 
+
+chgrp mtagroup /data/mta/Script/Interrupt/house_keeping/*

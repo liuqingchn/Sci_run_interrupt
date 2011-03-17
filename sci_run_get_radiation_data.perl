@@ -9,7 +9,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jun 29, 2006						#
+#		last update: Mar 17, 2011						#
 #											#
 #########################################################################################
 
@@ -18,10 +18,19 @@
 #--- setting directories
 #
 
-$bin_dir       = '/data/mta4/MTA/bin/';
-$data_dir      = '/data/mta4/MTA/data/';
-$web_dir       = '/data/mta/www/mta_interrupt/';
-$house_keeping = '/data/mta/www/mta_interrupt/house_keeping/';
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+
+@atemp = ();
+while(<FH>){
+        chomp $_;
+        push(@atemp, $_);
+}
+close(FH);
+
+$bin_dir       = $atemp[0];
+$data_dir      = $atemp[1];
+$web_dir       = $atemp[2];
+$house_keeping = $atemp[3];
 
 #################################################################
 

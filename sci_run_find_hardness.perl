@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jun 28, 2006							#
+#		last update: Mar 17, 2011							#
 #												#
 #################################################################################################
 
@@ -15,18 +15,19 @@
 #--- setting directories
 #
 
-open(FH, './dir_list');
-@list = ();
+pen(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+
+@atemp = ();
 while(<FH>){
         chomp $_;
-        push(@list, $_);
+        push(@atemp, $_);
 }
 close(FH);
 
-$bin_dir       = $list[0];
-$data_dir      = $list[1];
-$web_dir       = $list[2];
-$house_keeping = $list[3];
+$bin_dir       = $atemp[0];
+$data_dir      = $atemp[1];
+$web_dir       = $atemp[2];
+$house_keeping = $atemp[3];
 
 ################################################################
 
@@ -554,7 +555,7 @@ for($i = 0; $i < $dat_cnt; $i++){
 			$p761_avg,$p761_var,$p761_max,$p761_max_t,$p761_min,$p761_min_t,$p761_int;
 	printf OUT "p1060\t\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n",
 			$p1060_avg,$p1060_var,$p1060_max,$p1060_max_t,$p1060_min,$p1060_min_t,$p1060_int;
-	printf OUT "anisotopy\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n",
+	printf OUT "anisotropy\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n",
 			$aniso_avg,$aniso_var,$aniso_max,$aniso_max_t,$aniso_min,$aniso_min_t,$aniso_int;
 	print  OUT "\nHardness:\n";
 	print  OUT "---------\n";

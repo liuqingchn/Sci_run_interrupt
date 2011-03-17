@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Mar 24, 2010							#
+#		last update: Mar 17, 2011							#
 #												#
 #################################################################################################
 
@@ -15,18 +15,19 @@
 #--- setting directories
 #
 
-open(FH, './dir_list');
-@list = ();
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+
+@atemp = ();
 while(<FH>){
         chomp $_;
-        push(@list, $_);
+        push(@atemp, $_);
 }
 close(FH);
 
-$bin_dir       = $list[0];
-$data_dir      = $list[1];
-$web_dir       = $list[2];
-$house_keeping = $list[3];
+$bin_dir       = $atemp[0];
+$data_dir      = $atemp[1];
+$web_dir       = $atemp[2];
+$house_keeping = $atemp[3];
 
 ################################################################
 
@@ -201,8 +202,6 @@ sub print_sub_html{
 
         	to_dom();
 
-        	$end    = $dom + $btemp[3]/24 + $btemp[4]/1440;
-
 		OUTER:
 		foreach $ent (@rad_zone_list){
 			if($ent =~ /$atemp[0]/){
@@ -363,6 +362,9 @@ sub print_sub_html{
  		to_yday();
  
 		$time            = "$tyear:$tyday:$ttemp[3]:$ttemp[4]";
+		$tyear_s         = $tyear;
+		$tyday_s         = $tyday + $ttemp[3]/24 + $ttemp[4]/1440;
+
         	$time2           = $end[$k];
 		@ttemp           = split(/:/, $time2);
 		$tyear           = $ttemp[0];
@@ -372,6 +374,29 @@ sub print_sub_html{
 		to_yday();
 
 		$time2           = "$tyear:$tyday:$ttemp[3]:$ttemp[4]";
+
+		$tyday          += $ttemp[3]/24 + $ttemp[4]/1440;
+
+		
+		if($tyday >= $tyday_s){
+			$diff = $tyday - $tyday_s;
+		}else{
+			$ychk = 4.0 * int (0.25 *$tyear_s);
+			if($ychk == $tyear_s){
+				$base = 366;
+			}else{
+				$base = 365;
+			}
+			$base -= $tyday_s;
+			$diff  = $base + $tyday;
+		}
+		if($diff > 3){
+			$pt2_chk = 1;
+		}else{
+			$pt2_chk = 0;
+		}
+
+
         	$interrupt_time  = $interval[$k];
         	$int_method      = $method[$k];
 		$data_file_name  = "$sname".'_dat.txt';
@@ -382,8 +407,11 @@ sub print_sub_html{
 		$html_name       = "$sname".'.html';
 		$stat_name       = "$sname".'_stat';
 		$gif_name        = "$sname".'.gif';
+		$gif_name2       = "$sname".'_pt2.gif';
 		$ephin_gif       = "$sname".'_eph.gif';
+		$ephin_gif2      = "$sname".'_eph_pt2.gif';
 		$goes_gif        = "$sname".'_goes.gif';
+		$goes_gif2       = "$sname".'_goes_pt2.gif';
 		$intro_gif       = "$sname".'_intro.gif';
 	
 		print  OUT '<li style="text-align:left;font-weight:bold;padding-bottom:20px">',"\n";
@@ -441,25 +469,46 @@ sub print_ind_html{
 	$template  =~ s/#trigger#/$int_method/g;
 	$template  =~ s/#note_name#/$note_file_name/g;
 
-	$ace_data  = "$name".'_dat.txt';
+	$ace_data  = "$sname".'_dat.txt';
 	$template  =~ s/#ace_data#/$ace_data/g;
 	$ace_table = `cat $web_dir/Stat_dir/$stat_name`; 
 	$template  =~ s/#ace_table#/$ace_table/g;
-	$template  =~ s/#ace_plot#/$gif_name/g;
+	if($pt2_chk == 0){
+		$template  =~ s/#ace_plot#/$gif_name/g;
+		$template  =~ s/#ace_plot2#//g;
+	}else{
+		$template  =~ s/#ace_plot#/$gif_name/g;
+		$line = '<img src = "../Main_plot/'."$gif_name2".'"  width="100%">';
+		$template  =~ s/#ace_plot2#/$line/g;
+	}
 
-	$eph_data  = "$name".'_eph.txt';
+	$eph_data  = "$sname".'_eph.txt';
 	$template  =~ s/#eph_data#/$eph_data/g;
-	$eph_in    = "$name".'_txt';
+	$eph_in    = "$sname".'_txt';
 	$eph_table = `cat $web_dir/Ephin_plot/$eph_in`; 
 	$template  =~ s/#eph_table#/$eph_table/g;
-	$template  =~ s/#eph_plot#/$ephin_gif/g;
+	if($pt2_chk == 0){
+		$template  =~ s/#eph_plot#/$ephin_gif/g;
+		$template  =~ s/#eph_plot2#//g;
+	}else{
+		$template  =~ s/#eph_plot#/$ephin_gif/g;
+		$line = '<img src = "../Ephin_plot/'."$ephin_gif2".'"  width="100%">';
+		$template  =~ s/#eph_plot2#/$line/g;
+	}
 
-	$goes_data = "$name".'_goes.txt';
+	$goes_data = "$sname".'_goes.txt';
 	$template  =~ s/#goes_data#/$goes_data/g;
-	$goes_in   = "$name".'_text';
+	$goes_in   = "$sname".'_text';
 	$goes_table= `cat $web_dir/GOES_plot/$goes_in`; 
 	$template  =~ s/#goes_table#/$goes_table/g;
-	$template  =~ s/#goes_plot#/$goes_gif/g;
+	if($pt2_chk == 0){
+		$template  =~ s/#goes_plot#/$goes_gif/g;
+		$template  =~ s/#goes_plot2#//g;
+	}else{
+		$template  =~ s/#goes_plot#/$goes_gif/g;
+		$line = '<img src = "../GOES_plot/'."$goes_gif2".'" width="100%">';
+		$template  =~ s/#goes_plot2#/$line/g;
+	}
 
 	open(OUT2, ">$web_dir/Html_dir/$html_name");
 	

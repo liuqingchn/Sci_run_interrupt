@@ -7,7 +7,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jun 28, 2006						#
+#		last update: Mar 17, 2011						#
 #											#
 #########################################################################################
 
@@ -16,152 +16,102 @@
 #--- setting directories
 #
 
-open(FH, './dir_list');
-@list = ();
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+
+@atemp = ();
 while(<FH>){
         chomp $_;
-        push(@list, $_);
+        push(@atemp, $_);
 }
 close(FH);
 
-$bin_dir       = $list[0];
-$data_dir      = $list[1];
-$web_dir       = $list[2];
-$house_keeping = $list[3];
+$bin_dir       = $atemp[0];
+$data_dir      = $atemp[1];
+$web_dir       = $atemp[2];
+$house_keeping = $atemp[3];
 
 #################################################################
 
-$file = $ARGV[0];
+$name  = $ARGV[0];
+$begin = $ARGV[1];
+$end   = $ARGV[2];
+$ind   = $ARGV[4];		#--- auto or manual
 
-#
-#--- read radiation zone informtion
-#
+@atemp   = split(/:/, $begin);
+$start   = conv_date_dom($atemp[0], $atemp[1], $atemp[2]) + $atemp[3]/24 + $atemp[4]/1440;
 
-@rad_zone  = ();
-@date_list = ();
-open(FH, "$house_keeping/rad_zone_list");
+@atemp   = split(/:/, $end);
+$stop    = conv_date_dom($atemp[0], $atemp[1], $atemp[2]) + $atemp[3]/24 + $atemp[3]/1440;
 
+$tot_int = $stop - $start;
+
+extract_rad_zone_info();
+
+$sum = 0;
+OUTER:
+foreach $ent (@rad_entry){
+	$ent =~ s/\(//;
+	$ent =~ s/\)//;
+	@atemp = split(/\,/, $ent);
+	if($atemp[1] < $start){
+		next OUTER;
+	}elsif($atemp[0] > $stop){
+		last OUTER;
+	}elsif($atemp[0] >= $start && $atemp[1] <= $stop){
+		$diff  = $atemp[1] - $atemp[0];
+	}elsif($atemp[0] < $start && $atemp[1] > $start){
+		$diff  = $atemp[1] - $start;
+	}elsif($atemp[0] < $stop  && $atemp[1] > $stop){
+		$diff = $stop - $atemp[0];
+	}
+	$sum += $diff;
+}
+
+$adj_int = sprintf "%4.1f",86.4 * ($tot_int - $sum);
+print "$name\t$begin\t$end\t$adj_int\t$ind\n";
+
+
+open(FH, "$house_keeping/all_data");
+@input = ();
 while(<FH>){
 	chomp $_;
-	@atemp = split(/\s+/, $_);
-	push(@date_list, $atemp[0]);
-	push(@rad_zone,  $atemp[1]);
+	push(@input, $_);
 }
 close(FH);
+@temp  = sort{$a<=>$b} @input;
+@rtemp = reverse(@temp);
 
-open(FH,  "$file");
-open(OUT, ">temp_out");
-
-while(<FH>){
-#
-#--- read data from the list
-#
-	chomp $_;
-	@atemp  = split(/\s+/, $_);
-	$date   = $atemp[0];
-	$tstart = $atemp[1];
-	$tstop  = $atemp[2];
-	@btemp  = split(/:/, $atemp[1]);
-	$ydate  = find_ydate($btemp[0], $btemp[1], $btemp[2]);
-	$time   = "$btemp[3]:$btemp[4]:$btemp[5]";
-	$start  = cnv_time_to_t1998($btemp[0],$ydate,$time);
-	@btemp  = split(/:/, $atemp[2]);
-	$ydate  = find_ydate($btemp[0], $btemp[1], $btemp[2]);
-	$time   = "$btemp[3]:$btemp[4]:$btemp[5]";
-	$end    = cnv_time_to_t1998($btemp[0],$ydate,$time);
-	$stat   = $atemp[4];
-
-	$cnt = 0;
-	OUTER:
-	foreach $ent (@date_list){
-		if($date == $ent){
-			last OUTER;
-		}
-		$cnt++;
+$chk = 0;
+OUTER:
+foreach $ent (@rtemp){
+	@atemp = split(/\s+/, $ent);
+	if($atemp[0] =~ /$name/){
+		$chk++;
+		last OUTER;
 	}
-
-	$line  = $rad_zone[$cnt];
-	@alist = split(/:/, $line);
-	$sum   = 0;
-
-	foreach $ent  (@alist){
-		@ctemp = split(/\,/, $ent);
-		$p_beg = $ctemp[0];
-		$p_end = $ctemp[1];
-		$p_beg =~ s/\)//g;
-		$p_beg =~ s/\(//g;
-		$p_end =~ s/\)//g;
-		$p_end =~ s/\(//g;
-
-		$p_beg *= 86400;
-		$p_end *= 86400;
-		$p_beg += 48902399;
-		$p_end += 48902399;
+}
 		
-		if($p_beg <= $start && $p_end > $start && $p_end <= $end){
-			$sum += $p_end - $start;
-		}elsif($p_beg >= $start && $p_end <= $end){
-			$sum += $p_end - $p_beg;
-		}elsif($p_beg >= $start && $p_beg < $end && $p_end > $end){
-			$sum += $end - $p_beg;
-		}elsif($start >= $p_beg && $end <= $p_end){
-			$sum += $end - $start;
+open(OUT, '>./temp_file');
+if($chk == 0){
+	print OUT "$name\t$begin\t$end\t$adj_int\t$ind\n";
+	foreach $ent (@rtemp){
+		print OUT "$ent\n";
+	}
+}else{
+	foreach $ent (@rtemp){
+		@atemp = split(/\s+/, $ent);
+		if($atemp[0] =~ /$name/){
+			print OUT "$name\t$begin\t$end\t$adj_int\t$ind\n";
+		}else{
+			print OUT "$ent\n";
 		}
 	}
-
-	$diff  = $end - $start - $sum;
-
-	$diff /= 1000;
-	$gap   = sprintf "%5.1f", $diff;
-
-	print OUT "$date\t$tstart\t$tstop\t$gap\t$stat\n";
 }
 close(OUT);
-close(FH);
-
-system("mv $house_keeping/all_data $house_keeping/all_data~");
-system("cp temp_out $file");
-system("cat $house_keeping/all_data~ >> temp_out");
-system("mv temp_out $house_keeping/all_data");
 
 
-##################################################################
-### cnv_time_to_t1998: change time format to sec from 1998.1.1 ###
-##################################################################
-
-sub cnv_time_to_t1998{
-
-#######################################################
-#       Input   $year: year
-#               $ydate: date from Jan 1
-#               $hour:$min:$sec:
-#
-#       Output  $t1998<--- returned
-#######################################################
-
-        my($totyday, $totyday, $ttday, $t1998);
-        my($year, $ydate, $hour, $min, $sec);
-        ($year, $ydate, $hour, $min, $sec) = @_;
-
-        $totyday = 365*($year - 1998);
-        if($year > 2000){
-                $totyday++;
-        }
-        if($year > 2004){
-                $totyday++;
-        }
-        if($year > 2008){
-                $totyday++;
-        }
-        if($year > 2012){
-                $totyday++;
-        }
-
-        $ttday = $totyday + $ydate - 1;
-        $t1998 = 86400 * $ttday  + 3600 * $hour + 60 * $min +  $sec;
-
-        return $t1998;
-}
+####system("mv $house_keeping/all_data $house_keeping/all_data~");
+####system("mv temp_file $house_keeping/all_data");
 
 
 ##################################################
@@ -212,3 +162,136 @@ sub find_ydate {
         }
         return $ydate;
 }
+
+
+###################################################################################
+### read_rad_zone: read rad zone and create the list for the specified period   ###
+###################################################################################
+
+sub extract_rad_zone_info{
+        my ($start, $stop, @pstart, @pstop, @dom);
+        open(FH,"/data/mta_www/mta_interrupt/house_keeping/rad_zone_info");
+
+        @ind    = ();
+        @rtime  = ();
+        @rtime2 = ();
+        $rtot   = 0;
+
+        while(<FH>){
+                chomp $_;
+                @atemp = split(/\s+/, $_);
+                push(@ind,    $atemp[0]);
+                push(@rtime,  $atemp[1]);
+                push(@rtime2, $atemp[2]);
+                $rtot++;
+        }
+        close(FH);
+
+        @atemp = split(/:/, $begin);
+        $dom   = conv_date_dom($atemp[0],$atemp[1],$atemp[2]);
+        $start = $dom - 8;
+
+        @atemp = split(/:/, $end);
+        $dom   = conv_date_dom($atemp[0],$atemp[1],$atemp[2]);
+        $stop  = $dom + 8;
+
+        @pstart = ();
+        @pstop  = ();
+        $pcnt   = 0;
+        OUTER:
+        for($i = 0; $i < $rtot; $i++){
+                if($rtime[$i] < $start){
+                        next OUTER;
+                }elsif($rtime[$i] >= $start && $rtime[$i] < $stop){
+                        if($ind[$i] =~ /ENTRY/i){
+                                push(@pstart, $rtime[$i]);
+                        }elsif($ind[$i] =~ /EXIT/i){
+                                if(($pstart[$pcnt] != 0) && ($pstart[$pcnt] < $rtime[$i])
+){
+                                        push(@pstop, $rtime[$i]);
+                                        $pcnt++;
+                                }
+                        }
+                }elsif($rtime[$i] > $stop){
+                        last OUTER;
+                }
+        }
+
+
+        @rad_entry = ();
+        for($i = 0; $i < $pcnt; $i++){
+                $line = "($pstart[$i],$pstop[$i])";
+                push(@rad_entry, $line);
+        }
+}
+
+###########################################################################
+###      conv_date_dom: modify data/time format                       #####
+###########################################################################
+
+sub conv_date_dom {
+
+#############################################################
+#       Input:  $year: year in a format of 2004
+#               $month: month in a formt of  5 or 05
+#               $day:   day in a formant fo 5 05
+#
+#       Output: acc_date: day of mission returned
+#############################################################
+
+        my($year, $month, $day, $chk, $acc_date);
+
+        ($year, $month, $day) = @_;
+
+        $acc_date = ($year - 1999) * 365;
+
+        if($year > 2000 ) {
+                $acc_date++;
+        }elsif($year >  2004 ) {
+                $acc_date += 2;
+        }elsif($year > 2008) {
+                $acc_date += 3;
+        }elsif($year > 2012) {
+                $acc_date += 4;
+        }elsif($year > 2016) {
+                $acc_date += 5;
+        }elsif($year > 2020) {
+                $acc_date += 6;
+        }elsif($year > 2024) {
+                $acc_date += 7;
+        }
+
+        $acc_date += $day - 1;
+        if ($month == 2) {
+                $acc_date += 31;
+        }elsif ($month == 3) {
+                $chk = 4.0 * int(0.25 * $year);
+                if($year == $chk) {
+                        $acc_date += 59;
+                }else{
+                        $acc_date += 58;
+                }
+        }elsif ($month == 4) {
+                $acc_date += 90;
+        }elsif ($month == 5) {
+                $acc_date += 120;
+        }elsif ($month == 6) {
+                $acc_date += 151;
+        }elsif ($month == 7) {
+                $acc_date += 181;
+        }elsif ($month == 8) {
+                $acc_date += 212;
+        }elsif ($month == 9) {
+                $acc_date += 243;
+        }elsif ($month == 10) {
+                $acc_date += 273;
+        }elsif ($month == 11) {
+                $acc_date += 304;
+        }elsif ($month == 12) {
+                $acc_date += 335;
+        }
+        $acc_date -= 202;
+        return $acc_date;
+        return $acc_date;
+}
+
