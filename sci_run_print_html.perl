@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Mar 17, 2011							#
+#		last update: Jun 14, 2011							#
 #												#
 #################################################################################################
 
@@ -262,7 +262,8 @@ sub print_sub_html{
 	print OUT '</p>',"\n";
 	print OUT '',"\n";
 	print OUT '<p style="font-weight:bold;padding-left:4em;padding-right:6em">',"\n";
-	print OUT 'The following plots are P4 proton count rate (15.0 -  40.0 MeV protons Counts/cm2 sec sr MeV)',"\n";
+	print OUT 'The following plots are P4 proton count rate (15.0 -  40.0 MeV protons Counts/cm2 sec sr MeV --- ',"\n";
+	print OUT 'before year 2011), or E150 electron count rate (electron Counts/cm2 sed sr eV from 2011)',"\n";
 	print OUT 'around science runs were interrupted.  Plots start exactly 2 days before the interruption',"\n";
 	print OUT 'started, and fnish 5 days after. ACE radiation data and other proton/electron count rate data',"\n";
  	print OUT 'for the same periods can be found by clicking one of the plots, which opens up the page for',"\n";
@@ -276,6 +277,8 @@ sub print_sub_html{
 
 	print OUT '<p style="font-weight:bold;padding-left:4em;padding-right:6em">',"\n";
 	print OUT 'Note: Data points in 2000 Data are one hour average. All others are 5 min average.',"\n";
+	print OUT 'Plots after 2011 are siginficatlly different. Montoring of P4 and P41 were discontinued and ', "\n";
+	print OUT 'replaced by e150 and e1500. GOES data are also chnaged from that of GOES 11 to GOES 15.', "\n";
 	print OUT '</p>',"\n";
 
 	print OUT '<hr />',"\n";
@@ -435,7 +438,7 @@ sub print_sub_html{
 		print  OUT '</li>',"\n";
 	
 		if($print_chk eq  'yes'){
-			print_ind_html();
+			print_ind_html($start[$k]);
 		}
 	}
 	print OUT '</ul>',"\n";
@@ -459,7 +462,12 @@ sub print_ind_html{
 #--------printint sub html page
 #
 
-	$template  = `cat /data/mta/Script/Interrupt/Sci_run_interrupt/sub_html_template`;
+	($which_year) = @_;
+	if($which_year < 2011){
+		$template  = `cat /data/mta/Script/Interrupt/Sci_run_interrupt/sub_html_template`;
+	}else{
+		$template  = `cat /data/mta/Script/Interrupt/Sci_run_interrupt/sub_html_template_2011`;
+	}
 
 	$template  =~ s/#header_title#/$sname/g;
 	$template  =~ s/#main_title#/$sname/g;

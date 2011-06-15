@@ -7,7 +7,7 @@ use PGPLOT;
 #										#
 #		author: t. isobe (tisobe@cfa.harvard.edu)			#
 #										#
-#		last update: Mar 17, 2011					#
+#		last update: Jun 13, 2011					#
 #										#
 #	P1    .8 -   4.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected	#
 #	P2   4.0 -   9.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected	#
@@ -22,7 +22,7 @@ use PGPLOT;
 #
 
 
-pen(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
 
 @atemp = ();
 while(<FH>){
@@ -45,9 +45,16 @@ $house_keeping = $atemp[3];
 #	20061213   2006:12:13:22:44  2006:12:16:13:42
 #
 
-$name  = $ARGV[0];
-$begin = $ARGV[1];		#--- sci run interruption started
-$end   = $ARGV[2];		#--- sci run interruption finished
+$file = $ARGV[0];
+open(FH, "$file");
+$input = <FH>
+close(FH);
+chomp $input;
+@atemp = split(/\s+/, $input);
+
+$name  = $atemp[0];
+$begin = $atemp[1];		#--- sci run interruption started
+$end   = $atemp[2];		#--- sci run interruption finished
 
 #
 #--- change date  to fractional year format
@@ -310,20 +317,73 @@ if($rstop > $stop){
 #--- create a html address which includes the data
 #
 
-@ctemp = split(//, $pyear);
-$file = 'G105'."$ctemp[2]$ctemp[3]"."$pmon".'.TXT';
-$html = 'http://goes.ngdc.noaa.gov/data/avg/'."$pyear".'/'."$file";
+@html_list = ();
 
-#
-#---lynx convert html page into ascii data file
-#
+if($pyear == $peyear){
+	if($pmon == $pemon){
+		$tmon = int($pmon);
+		if($tmon < 10){
+			$tmon = '0'."$tmon";
+		}
+		for($tday = $pday; $tday <= $peday; $tday++){
+			if($tday < 10){
+				$tday = int($tday);
+				$tday = '0'."$tday";
+			}
+			$time_stamp = "$pyear"."$tmon"."$tday";
+			$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
+			push(@html_list, $html);
+		}
+	}elsif($pmon < $pemon){
+		if($pmon == 2){
+			$chk = 4 * int(0.25  * $pyear);
+			if($chk == $pyear){
+				$end_date = 29;
+			}else{
+				$end_date = 28;
+			}
+		}elsif($pmon == 1 || $pmon == 3 || $pmon == 5 || $pmon == 7 || $pmon == 8 ||$pmon == 10 ){
+			$end_date = 31;
+		}else{
+			$end_date = 30;
+		}
 
-system("/opt/local/bin/lynx -source $html >./Working_dir/temp_data");
-open(FH, "./Working_dir/temp_data");
+		$tmon = $pmon;
+		if($tmon < 10){
+			$tmon = '0'. "$tmon";
+		}
+		for($tday = $pday; $tday <= $end_date; $tday++){
+			$time_stamp = "$pyear"."$tmon"."$tday";
+			$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
+			push(@html_list, $html);
+		}
+		$tmon = $pemon;
+		if($tmon < 10){
+			$tmon = '0'. "$tmon";
+		}
+		for($tday = 1; $tday <= $peday; $tday++){
+			$tday = int($tday);
+			$tday = '0'."$tday";
+			$time_stamp = "$pyear"."$tmon"."$tday";
+			$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
+			push(@html_list, $html);
+		}
+	}
+}else{
+	for($tday = $pday; $tday <= 31; $tday++){
+		$time_stamp = "$pyear"."12"."$tday";
+		$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
+		push(@html_list, $html);
+	}
+	for($tday = 1; $tday <= $peday; $tday++){
+		$tday = int($tday);
+		$tday = '0'."$tday";
+		$time_stamp = "$pyear"."01"."$tday";
+		$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
+		push(@html_list, $html);
+	}
+}
 
-#
-#--- read the data and save needed data points
-#
 
 @day  = ();
 @time = ();
@@ -338,102 +398,36 @@ if($run_second > 0){
 	$cstop = $stop2;
 }
 
-OUTER:
-while(<FH>){
-	chomp $_;
-	if($chk == 0 && $_ =~ /------------------------/){
-		$chk = 1;
-		next OUTER;
-	}elsif($chk == 0){
-		next OUTER;
-	}
-	@atemp = split(/\s+/, $_);
-	@btemp = split(//, $atemp[0]);
-	$year  = "$btemp[0]$btemp[1]";
-	$mon   = "$btemp[2]$btemp[3]";
-	$day   = "$btemp[4]$btemp[5]";
-	@btemp = split(//, $atemp[1]);
-	$hour  = "$btemp[0]$btemp[1]";
-	$min   = "$btemp[2]$btemp[2]";
-	
-	$time = date_to_fyear($year, $mon, $day, $hour, $min);
-	if($time >= $start && $time <= $cstop){
-		push(@date, $time);
-		push(@p1,   $atemp[10]);
-		push(@p2,   $atemp[11]);
-		push(@p5,   $atemp[14]);
-		$tot++;
-	}
-}
-close(FH);
 
-#
-#--- check whether we need to open another file or not
-#
-
-$chk = 0;
-if($run_second == 0){
-	if($pyear == $peyear){			#---- next month of the same year
-		if($pmon < $pemon){
-			$chk = 1;
-		}
-	}elsif($peyar < $peyear){		#---- jan of the next year
-		$chk = 1;
-	}
-}else{
-#
-#--- for the case we need 2nd panel
-#
-	if($pyear == $p2eyear){			#---- next month of the same year
-		if($pmon < $p2emon){
-			$chk = 1;
-		}
-	}elsif($peyar < $p2eyear){		#---- jan of the next year
-		$chk = 1;
-	}
-}
-
-if($chk == 1){
-#
-#--- yes we need to read another data set from the next month
-#
-	@ctemp = split(//, $peyear);
-	$file = 'G105'."$ctemp[2]$ctemp[3]"."$pemon".'.TXT';
-	$html = 'http://goes.ngdc.noaa.gov/data/avg/'."$peyear".'/'."$file";
-
+foreach $html (@html_list){
 	system("/opt/local/bin/lynx -source $html >./Working_dir/temp_data");
 	open(FH, "./Working_dir/temp_data");
-	
 	OUTER:
 	while(<FH>){
 		chomp $_;
-		if($chk == 0 && $_ =~ /------------------------/){
-			$chk = 1;
-			next OUTER;
-		}elsif($chk == 0){
+		@atemp = split(//, $_);
+		if($atemp[0] =~ /\#/ || $atemp[0] =~ /\:/){
 			next OUTER;
 		}
 		@atemp = split(/\s+/, $_);
-		@btemp = split(//, $atemp[0]);
-		$year  = "$btemp[0]$btemp[1]";
-		$mon   = "$btemp[2]$btemp[3]";
-		$day   = "$btemp[4]$btemp[5]";
-		@btemp = split(//, $atemp[1]);
+		$year  = $atemp[0];
+		$mon   = $atemp[1];
+		$day   = $atemp[2];
+		@btemp = split(//, $atemp[3]);
 		$hour  = "$btemp[0]$btemp[1]";
 		$min   = "$btemp[2]$btemp[2]";
 		
 		$time = date_to_fyear($year, $mon, $day, $hour, $min);
 		if($time >= $start && $time <= $cstop){
 			push(@date, $time);
-			push(@p1,   $atemp[10]);
-			push(@p2,   $atemp[11]);
-			push(@p5,   $atemp[14]);
+			push(@p1,   $atemp[6]);
+			push(@p2,   $atemp[7]);
+			push(@p5,   $atemp[10]);
 			$tot++;
 		}
 	}
 	close(FH);
 }
-
 
 system("rm ./Working_dir/temp_data");
 
@@ -513,11 +507,19 @@ $stot5  = 0;
 $ymin = -3;
 @temp = sort{$a<=>$b} @p1;
 $ymax = $temp[$cnt-1];
-$ymax = int(log($ymax)/2.302585093) + 1;
+if($ymax > 0){
+	$ymax = int(log($ymax)/2.302585093) + 1;
+}else{
+	$ymax = 1;
+}
 
 @temp = sort{$a<=>$b} @p2;
 $ymax2= $temp[$cnt-1];
-$ymax2= int(log($ymax)/2.302585093) + 1;
+if($ymax2 > 0){
+	$ymax2= int(log($ymax)/2.302585093) + 1;
+}else{
+	$ymax2 = 1;
+}
 
 if($ymax2 > $ymax){
 	$ymax = $ymax2;
@@ -525,7 +527,11 @@ if($ymax2 > $ymax){
 
 @temp = sort{$a<=>$b} @p5;
 $ymax5= $temp[$cnt-1];
-$ymax5= int(log($ymax)/2.302585093) + 1;
+if($ymax5 > 0){
+	$ymax5= int(log($ymax)/2.302585093) + 1;
+}else{
+	$ymax5 =1;
+}
 
 if($ymax5 > $ymax){
 	$ymax = $ymax5;
@@ -622,14 +628,29 @@ if($run_second > 0){
 #--- compute average and sigma of the radiation doses
 #
 
-$p1avg = $sum1/$stot1;
-$p1sig = sqrt($sum1_2/$stot1 - $p1avg * $p1avg);
+if($stot1 > 0){
+	$p1avg = $sum1/$stot1;
+	$p1sig = sqrt($sum1_2/$stot1 - $p1avg * $p1avg);
+}else{
+	$p1avg = 'n/a';
+	$p1sig = 'n/a';
+}
 
-$p2avg = $sum2/$stot2;
-$p2sig = sqrt($sum2_2/$stot2 - $p2avg * $p2avg);
+if($stot2 > 0){
+	$p2avg = $sum2/$stot2;
+	$p2sig = sqrt($sum2_2/$stot2 - $p2avg * $p2avg);
+}else{
+	$p2avg = 'n/a';
+	$p2sig = 'n/a';
+}
 
-$p5avg = $sum5/$stot5;
-$p5sig = sqrt($sum5_2/$stot5 - $p5avg * $p5avg);
+if($stot5 > 0){
+	$p5avg = $sum5/$stot5;
+	$p5sig = sqrt($sum5_2/$stot5 - $p5avg * $p5avg);
+}else{
+	$p5avg = 'n/a';
+	$p5sig = 'n/a';
+}
 
 #
 #--- print out stat info
@@ -919,7 +940,7 @@ sub plot_data{
 			$p5min  = $p5[$m];
 			$p5tmin = $xdate[$m];
 		}
-		if($p5max < $ydata){
+		if($p5max < $p5[$m]){
 			$p5max  = $p5[$m];
 			$p5tmax = $xdate[$m];
 		}
@@ -1110,7 +1131,7 @@ sub plot_box{
 
 sub extract_rad_zone_info{
 	my ($start, $stop, @pstart, @pstop, @dom);
-	open(FH,"/data/mta_www/mta_interrupt/house_keeping/rad_zone_info");
+	open(FH,"$house_keeping/rad_zone_info");
 
 	@ind    = ();
 	@rtime  = ();

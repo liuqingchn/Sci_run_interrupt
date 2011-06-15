@@ -9,7 +9,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Mar 17, 2011						#
+#		last update: Jun 14, 2011						#
 #											#
 #########################################################################################
 
@@ -39,6 +39,46 @@ $house_keeping = $atemp[3];
 #
 
 ($usec, $umin, $uhour, $umday, $umon, $uyear, $uwday, $uyday, $uisdst)= localtime(time);
+
+$year = $uyear + 1900;
+$mon  = $umon  + 1;
+$day  = $umday;
+
+
+if($mon == 1 && $day == 1){
+#
+#-- this is a new year... complete the last year
+#
+	$year--;
+}
+
+$name = '/data/mta4/www/DAILY/mta_rad/ACE/'."$year".'*_ace_epam_5m.txt';
+system("cat $name > /data/mta/Script/Interrupt/Exc/Working_dir/zztemp");
+open(FH, "/data/mta/Script/Interrupt/Exc/Working_dir/zztemp");
+open(OUT, ">/data/mta/Script/Interrupt/Exc/Working_dir/cleaned");
+OUTER:
+while(<FH>){
+	chomp $_;
+	@atemp = split(//, $_);
+	if($atemp[0] =~ /\#/ || $atemp[0] =~ /\:/){
+		next OUTER;
+	}
+	print OUT "$_\n";
+}
+close(OUT);
+close(FH);
+
+system("rm /data/mta/Script/Interrupt/Exc/Working_dir/zztemp");
+$file = 'rad_data'."$year";
+system("mv /data/mta/Script/Interrupt/Exc/Working_dir/cleaned $house_keeping/$file");
+
+
+
+exit 1;
+
+#################################################
+#---- this is the old one
+#################################################
 
 #
 #--- find date of 2 days ago

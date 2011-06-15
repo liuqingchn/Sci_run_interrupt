@@ -7,7 +7,7 @@ use PGPLOT;
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Dec 11, 2006						#
+#		last update: Jun 10, 2011						#
 #											#
 #########################################################################################
 
@@ -16,7 +16,7 @@ use PGPLOT;
 #--- setting directories
 #
 
-open(FH, './dir_list');
+open(FH, '/data/mta/Script/Interrupt/house_keeping/dir_list');
 @list = ();
 while(<FH>){
         chomp $_;

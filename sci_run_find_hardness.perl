@@ -15,7 +15,7 @@
 #--- setting directories
 #
 
-pen(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
+open(FH, "/data/mta/Script/Interrupt/house_keeping/dir_list");
 
 @atemp = ();
 while(<FH>){

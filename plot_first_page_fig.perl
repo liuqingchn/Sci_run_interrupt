@@ -8,7 +8,7 @@ use PGPLOT;
 #											#
 #		author: t. siboe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update Mar 17, 2011						#
+#		last update Jun 13, 2011						#
 #											#
 #########################################################################################
 
@@ -38,9 +38,16 @@ $house_keeping = $atemp[3];
 #--- data input example:
 #
 
-$name  = $ARGV[0];
-$begin = $ARGV[1];              #--- sci run interruption started
-$end   = $ARGV[2];              #--- sci run interruption finished
+$file = $ARGV[0];
+open(FH, "$file");
+$input = <FH>
+close(FH);
+chomp $input;
+@atemp = split(/\s+/, $input);
+
+$name  = $atemp[0];
+$begin = $atemp[1];              #--- sci run interruption started
+$end   = $atemp[2];              #--- sci run interruption finished
 
 @atemp = split(/:/, $begin);
 $byear = $atemp[0];
@@ -63,7 +70,7 @@ $stop  = find_ydate($eyear, $emon, $eday) + $ehour/24 + $emin/1440;
 
 $data  = "$name".'_eph.txt';
 @time  = ();
-@p4    = ();
+@e150  = ();
 $pcnt  = 0;
 open(FH, "$web_dir/Data_dir/$data");
 OUTER:
@@ -73,12 +80,13 @@ while(<FH>){
 	if($atemp[0] !~ /\d/){
 		next OUTER;
 	}
-#	if($atemp[1] <= 0){
-#		next OUTER;
-#	}
-	$p4d    = (log($atemp[1]))/2.302585093;
+	if($atemp[2] <= 0){
+		next OUTER;
+	}
+#	$p4d      = (log($atemp[1]))/2.302585093;
+	$e150d    = (log($atemp[2]))/2.302585093;
 	push(@time, $atemp[0]);
-	push(@p4,  $p4d);
+	push(@e150,  $e150d);
 	$pcnt++;
 }
 close(FH);
@@ -97,9 +105,10 @@ pgslw(4);
 
 $xmin = $start -2;
 $xmax = $xmin  +5;
-$ylab = 'Log(P4 Rate)';
+#$ylab = 'Log(P4 Rate)';
+$ylab = 'Log(e150 Rate)';
 $ymin = -3;
-@temp = sort{$a<=>$b} @p4;
+@temp = sort{$a<=>$b} @e150;
 $ymax = $temp[$cnt-1];
 $ymax = int($ymax) + 1;
 
@@ -118,13 +127,15 @@ pgptxt($irpt_start, $ym, 0, left, interruption);
 
 pgmove($stop, $ymin);
 pgdraw($stop, $ymax);
-pgmove($xmin, 2.477);
-pgdraw($xmax, 2.477);
+#pgmove($xmin, 2.477);
+#pgdraw($xmax, 2.477);
+pgmove($xmin, 2.);
+pgdraw($xmax, 2.);
 pgsci(1);
 
 pgsch(4);
 for($m = 0; $m < $pcnt -1; $m++){
-        pgpt(1, $time[$m], $p4[$m], 1);
+        pgpt(1, $time[$m], $e150[$m], 1);
 }
 pgsch(2);
 

@@ -8,7 +8,7 @@
 #											#
 #		this script needs another script: get_ephin.perl			#
 #											#
-#		last update: Feb 01, 2010						#
+#		last update: Jun 10, 2011						#
 #											#
 #########################################################################################
 
@@ -17,7 +17,7 @@
 #--- setting directories
 #
 
-open(FH, './dir_list');
+open(FH, '/data/mta/Script/Interrupt/house_keeping/dir_list');
 @list = ();
 while(<FH>){
         chomp $_;

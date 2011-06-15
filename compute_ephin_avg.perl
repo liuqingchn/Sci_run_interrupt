@@ -6,12 +6,19 @@
 #													#
 #		author: t. isobe (tisobe@cfa.harvard.edu)						#
 #													#
-#		last update: Mar 24, 2010								#
+#		last update: Jun 14, 2011								#
 #													#
 #########################################################################################################
 
-$name = $ARGV[0];	#--- name of the event
-$beg  = $ARGV[1];	#--- begining of the interruption
+$file = $ARGV[0];
+open(FH, "$file");
+$input = <FH>
+close(FH);
+chomp $input;
+@atemp = split(/\s+/, $input);
+
+$name = $atemp[0];	#--- name of the event
+$beg  = $atemp[1];	#--- begining of the interruption
 
 #
 #-- convert into ydate
@@ -123,13 +130,13 @@ close(FH);
 #
 
 $p4avg = $p4sum1/$tot;
-$p4sig = sqrt($p4sum2/$tot - $p4avg * $p4avg);
+$p4sig = sqrt(abs($p4sum2/$tot - $p4avg * $p4avg));
 
 $p41avg = $p41sum1/$tot;
-$p41sig = sqrt($p41sum2/$tot - $p41avg * $p41avg);
+$p41sig = sqrt(abs($p41sum2/$tot - $p41avg * $p41avg));
 
 $e1300avg = $e1300sum1/$tot;
-$e1300sig = sqrt($e1300sum2/$tot - $e1300avg * $e1300avg);
+$e1300sig = sqrt(abs($e1300sum2/$tot - $e1300avg * $e1300avg));
 
 
 

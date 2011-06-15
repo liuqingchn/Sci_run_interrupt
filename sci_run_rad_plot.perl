@@ -7,7 +7,7 @@ use PGPLOT;
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Jun 28, 2006						#
+#		last update: Jun 10, 2011						#
 #											#
 #########################################################################################
 
@@ -16,7 +16,7 @@ use PGPLOT;
 #--- setting directories
 #
 
-open(FH, './dir_list');
+open(FH, '/data/mta/Script/Interrupt/house_keeping/dir_list');
 @list = ();
 while(<FH>){
         chomp $_;
@@ -293,7 +293,6 @@ sub set_time_int {
 	}
 	
 	$stop_time = "$year:$month:$end_date:$hour:$min";
-#print "$start_time	$stop_time\n";
 }
 
 ########################################################################

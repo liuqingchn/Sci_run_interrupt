@@ -5,7 +5,7 @@ Current setting of directories are:
 	$bin_dir       = /data/mta4/MTA/bin/;
 	$data_dir      = /data/mta4/MTA/data/;
 	$web_dir       = /data/mta/www/mta_interrupt/;
-	$house_keeping = /data/mta/www/mta_interrupt/house_keeping/;
+	$house_keeping = /data/mta/Script/Interrupt/house_keeping/;
 
 
 1. create input list (e.g, input_file)
@@ -61,7 +61,7 @@ or
 4. add the data in input_file to "all_data" (this file is in $house_keeping). 
    To do this, run:
 
-   	perl $bin_dir/sci_run_compute_gap.perl input_file
+   	perl $bin_dir/sci_run_compute_gap.perl  <file>
 
    this will compute science time lost (interruption total - radiation zone)
    and add to the all_data list. Check the interruption time. If it is different
@@ -69,7 +69,7 @@ or
 
 5. plot NOAA data. run:
    
- 	perl $bin_dir/sci_run_rad_plot.perl
+ 	/opt/local/bin/perl $bin_dir/sci_run_rad_plot.perl
 		this will ask:
 		input:  rad_data<yyyy>		(e.g. rad_data2006) 
 	       	 	input_file  		(from 1)
@@ -86,23 +86,28 @@ or
 
 6. plot ephin data
 
-	perl $bin_dir/sci_run_ephin_plot_main.perl
-		input  input_file (from 1)
-	       	user name	---- user name and password for arc4gl
-	       	pass word
+	perl $bin_dir/extract_ephin.perl <file name>
 
-	scondary program: $bin_dir/sci_run_get_ephin.perl
+or if the data older than 2011
+	perl $bin_dir/extract_ephin_pre2011.perl <name> <start> <end>
+
+#	perl $bin_dir/sci_run_ephin_plot_main.perl
+#		input  input_file (from 1)
+#	       	user name	---- user name and password for arc4gl
+#	       	pass word
+#
+#	scondary program: $bin_dir/sci_run_get_ephin.perl (extract_ephin.perl)
 
 
-	Output: $web_dir/Ephin_plot/20060320_eph.gif
+	Output: $web_dir/Ephin_plot/20060320_eph.gif	
 	        a postscript version is also kept in $web_dir/Ps_dir
 
 	compute ephin stat:
 
-	perl $bin_dir/compute_ephin_avg.perl 
-		input input_file (from 1)
+	perl $bin_dir/compute_ephin_avg.perl <input file>
 
-7. extract goes-11 data and creates a plot
+7. extract goes-15 data and creates a plot	
+
 
 	/opt/local/bin/perl extract_goes.perl 
 		input input_file (from 1)
@@ -111,8 +116,8 @@ or
 
 	first createa a front page plot
 	
-	/opt/local/bin/perl plot_first_page_fig.perl 
-		input input_file (from 1);
+	/opt/local/bin/perl plot_first_page_fig.perl <name> <start> <end>
+		input  event name  beginning time ending time (from input_file from 1);
 
 	perl $bin_dir/sci_run_print_html.perl
 	input: input_file
@@ -123,6 +128,8 @@ or
 
    	perl $bin_dir/sci_run_print_top_html.perl --- top html pages
 	input: all_data	
+
+	DON'T FORGET TO MOVE THE *.html FILES to /data/mta_www/mta_interrupt/
 
 10. Create note html
 	go to $web_dir/Note_dir, and create a file such as 20060320.txt.

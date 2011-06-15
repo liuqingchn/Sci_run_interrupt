@@ -32,10 +32,17 @@ $house_keeping = $atemp[3];
 
 #################################################################
 
-$name  = $ARGV[0];
-$begin = $ARGV[1];
-$end   = $ARGV[2];
-$ind   = $ARGV[4];		#--- auto or manual
+$file  = $ARGV[0];
+open(FH, "$file");
+$input = <FH>;
+close(FH);
+chomp $input;
+@atemp = split(/\s+/, $input);
+
+$name  = $atemp[0];
+$begin = $atemp[1];
+$end   = $atemp[2];
+$ind   = $atemp[4];		#--- auto or manual
 
 @atemp   = split(/:/, $begin);
 $start   = conv_date_dom($atemp[0], $atemp[1], $atemp[2]) + $atemp[3]/24 + $atemp[4]/1440;

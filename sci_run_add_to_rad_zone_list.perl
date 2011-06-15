@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvarad.edu)					#
 #												#
-#		last update: Jun 28, 2006							#
+#		last update: Jun 09, 2011							#
 #												#
 #################################################################################################
 	
@@ -15,7 +15,7 @@
 #--- setting directories
 #
 
-open(FH, './dir_list');
+open(FH, '/data/mta/Script/Interrupt/house_keeping/dir_list');
 @list = ();
 while(<FH>){
 	chomp $_;
@@ -69,7 +69,7 @@ foreach $time (@time_list){
 #
 
 	$begin = $dom - 3;
-	$end   = $dom + 5;
+	$end   = $dom + 7;
 
 #
 #--- read radiation zone infornation

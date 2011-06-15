@@ -8,7 +8,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Mar 17, 2011							#
+#		last update: Jun 15, 2011							#
 #												#
 #################################################################################################
 
@@ -98,7 +98,8 @@ foreach $ent (@line_list){
 
 	system("/opt/local/bin/perl $bin_dir/sci_run_rad_plot.perl $rad_data $file");
 
-	system("/opt/local/bin/perl $bin_dir/sci_run_ephin_plot_main.perl $input_file");
+#	system("/opt/local/bin/perl $bin_dir/sci_run_ephin_plot_main.perl $input_file");
+	system("/opt/local/bin/perl $bin_dir/extract_ephin.perl $input_file");
 
 	system("/opt/local/bin/perl $bin_dir/sci_run_find_hardness.perl $input_file");
 
@@ -111,6 +112,7 @@ foreach $ent (@line_list){
 	system("/opt/local/bin/perl $bin_dir/sci_run_print_html.perl $input_file");
 
 	system("/opt/local/bin/perl $bin_dir/sci_run_print_top_html.perl all_data");
+	system("mv *.html /data/mta_www/mta_interrupt/");
 }
 
 system("rm ./dir_list $input_file");
