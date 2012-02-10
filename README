@@ -81,12 +81,12 @@ or
 
 	Compute statistics of the radiations
 
-	perl $bin_dir/sci_run_find_hardness.perl  
+	/opt/local/bin/perl $bin_dir/sci_run_find_hardness.perl  
 	input: all_data (no need to specify the path)
 
 6. plot ephin data
 
-	perl $bin_dir/extract_ephin.perl <file name>
+	/opt/local/bin/perl $bin_dir/extract_ephin.perl <file name>
 
 or if the data older than 2011
 	perl $bin_dir/extract_ephin_pre2011.perl <name> <start> <end>
@@ -116,8 +116,10 @@ or if the data older than 2011
 
 	first createa a front page plot
 	
-	/opt/local/bin/perl plot_first_page_fig.perl <name> <start> <end>
-		input  event name  beginning time ending time (from input_file from 1);
+#	/opt/local/bin/perl plot_first_page_fig.perl <name> <start> <end>
+#		input  event name  beginning time ending time (from input_file from 1);
+
+	/opt/local/bin/perl plot_first_page_fig.perl <input file>
 
 	perl $bin_dir/sci_run_print_html.perl
 	input: input_file

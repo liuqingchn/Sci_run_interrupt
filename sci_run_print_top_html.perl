@@ -47,6 +47,7 @@ if($date_list =~ /all_data/){
 	$date_list = "$house_keeping/$date_list";
 }
 
+
 open(FH, "$date_list");
 
 @hardness = ();

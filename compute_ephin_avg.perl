@@ -12,7 +12,7 @@
 
 $file = $ARGV[0];
 open(FH, "$file");
-$input = <FH>
+$input = <FH>;
 close(FH);
 chomp $input;
 @atemp = split(/\s+/, $input);

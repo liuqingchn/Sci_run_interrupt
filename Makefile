@@ -5,7 +5,7 @@ TASK = Sci_run_interrupt
 
 include /data/mta4/MTA/include/Makefile.MTA
 
-BIN  = compute_ephin_avg.perl, extract_ace.perl, extract_ephin.perl, extract_ephin_pre2011.perl, extract_goes.perl, extract_goes_pre2011.perl, plot_first_page_fig.perl, sci_run_add_to_rad_zone_list.perl, sci_run_compute_gap.perl, sci_run_ephin_plot_main.perl, sci_run_find_hardness.perl, sci_run_get_ephin.perl, sci_run_get_rad_zone_info.perl, sci_run_get_radiation_data.perl, sci_run_main_run.perl, sci_run_print_html.perl, sci_run_print_top_html.perl, sci_run_rad_plot.perl, sub_html_template, sub_html_template_2011
+BIN  = compute_ephin_avg.perl  extract_ace.perl  extract_ephin.perl  extract_ephin_pre2011.perl  extract_goes.perl  extract_goes_pre2011.perl  plot_first_page_fig.perl  sci_run_add_to_rad_zone_list.perl  sci_run_compute_gap.perl  sci_run_ephin_plot_main.perl  sci_run_find_hardness.perl  sci_run_get_ephin.perl  sci_run_get_rad_zone_info.perl  sci_run_get_radiation_data.perl  sci_run_main_run.perl  sci_run_print_html.perl  sci_run_print_top_html.perl  sci_run_rad_plot.perl  sub_html_template  sub_html_template_2011
 
 DOC  = README
 
