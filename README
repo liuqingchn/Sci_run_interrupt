@@ -70,9 +70,11 @@ or
 5. plot NOAA data. run:
    
  	/opt/local/bin/perl $bin_dir/sci_run_rad_plot.perl
-		this will ask:
-		input:  rad_data<yyyy>		(e.g. rad_data2006) 
-	       	 	input_file  		(from 1)
+#		this will ask:
+#		input:  rad_data<yyyy>		(e.g. rad_data2006) 
+#	       	 	input_file  		(from 1)
+
+	ARGV: input_file
 
 	Outputs are (for example):
 		$web_dir/Main_plot/20060320.gif
@@ -82,7 +84,7 @@ or
 	Compute statistics of the radiations
 
 	/opt/local/bin/perl $bin_dir/sci_run_find_hardness.perl  
-	input: all_data (no need to specify the path)
+	input: $house_keeping/all_data 
 
 6. plot ephin data
 
