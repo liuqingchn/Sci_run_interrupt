@@ -70,11 +70,9 @@ or
 5. plot NOAA data. run:
    
  	/opt/local/bin/perl $bin_dir/sci_run_rad_plot.perl
-#		this will ask:
-#		input:  rad_data<yyyy>		(e.g. rad_data2006) 
-#	       	 	input_file  		(from 1)
-
-	ARGV: input_file
+		this will ask:
+		input:  rad_data<yyyy>		(e.g. rad_data2006) 
+	       	 	input_file  		(from 1)
 
 	Outputs are (for example):
 		$web_dir/Main_plot/20060320.gif

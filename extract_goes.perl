@@ -7,7 +7,7 @@ use PGPLOT;
 #										#
 #		author: t. isobe (tisobe@cfa.harvard.edu)			#
 #										#
-#		last update: Jun 13, 2011					#
+#		last update: Mar 05, 2012					#
 #										#
 #	P1    .8 -   4.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected	#
 #	P2   4.0 -   9.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected	#
@@ -348,7 +348,7 @@ if($pyear == $peyear){
 			$end_date = 30;
 		}
 
-		$tmon = $pmon;
+		$tmon = int($pmon);
 		if($tmon < 10){
 			$tmon = '0'. "$tmon";
 		}
@@ -357,7 +357,7 @@ if($pyear == $peyear){
 			$html = 'http://www.swpc.noaa.gov/ftpdir/lists/pchan/'."$time_stamp".'_Gp_pchan_5m.txt';
 			push(@html_list, $html);
 		}
-		$tmon = $pemon;
+		$tmon = int($pemon);
 		if($tmon < 10){
 			$tmon = '0'. "$tmon";
 		}
