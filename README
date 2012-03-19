@@ -102,10 +102,10 @@ or if the data older than 2011
 	Output: $web_dir/Ephin_plot/20060320_eph.gif	
 	        a postscript version is also kept in $web_dir/Ps_dir
 
-	compute ephin stat:
-
-	perl $bin_dir/compute_ephin_avg.perl <input file>
-
+#	compute ephin stat:
+#
+#	perl $bin_dir/compute_ephin_avg.perl <input file>	#--- STAT is now computed in the prev step.
+#
 7. extract goes-15 data and creates a plot	
 
 
@@ -131,7 +131,11 @@ or if the data older than 2011
    	perl $bin_dir/sci_run_print_top_html.perl --- top html pages
 	input: all_data	
 
+#######################################################################################################
 	DON'T FORGET TO MOVE THE *.html FILES to /data/mta_www/mta_interrupt/
+**!!!!! IMPORTNAT: GO TO THE PAGE AND OPEN THE  time_order.html FILE, AND CHECK EVERYTHING IS THERE
+**!!!!! AFTER ALL PROCESS WAS DONE. THERE IS SOME GLITCH TO REPLACE THE FILE TO AN EMPTY ONE!!!!!
+#######################################################################################################
 
 10. Create note html
 	go to $web_dir/Note_dir, and create a file such as 20060320.txt.

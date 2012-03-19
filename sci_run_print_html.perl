@@ -6,7 +6,7 @@
 #												#
 #		author: t. isobe (tisobe@cfa.harvard.edu)					#
 #												#
-#		last update: Jun 14, 2011							#
+#		last update: Mar 19, 2012							#
 #												#
 #################################################################################################
 
@@ -113,7 +113,7 @@ $hmonth    = $hmon + 1;
 $print_chk = 'yes';
 
 #
-#--- create time ordered html pages
+#--- create time ordered html pages	<---- this is dummy run; time ordered html will be recreated later.
 #
 
 $which     = 'time_order';
@@ -149,7 +149,7 @@ $which    = 'manual';
 $in_file  = 'manual_list';
 $out_file = "$web_dir".'/manu_shut.html';
 
-print_sub_html();
+#print_sub_html();
 
 #
 #--- create hardness ordered html pages
@@ -160,6 +160,14 @@ $in_file  = 'hardness_ordered';
 $out_file = "$web_dir".'/hard_order.html';
 
 print_sub_html();
+
+
+#
+#--- create top level html pages
+#
+
+system("perl $bin_dir/sci_run_print_top_html.perl all_data");
+system("mv *html $web_dir/.");
 
 system("rm ./auto_list ./manual_list ./hardness_ordered");
 
