@@ -7,7 +7,7 @@
 #											#
 #		author: t. isobe (tisobe@cfa.harvard.edu)				#
 #											#
-#		last update: Mar 17, 2011						#
+#		last update: Mar 26, 2012						#
 #											#
 #########################################################################################
 
@@ -177,7 +177,7 @@ sub find_ydate {
 
 sub extract_rad_zone_info{
         my ($start, $stop, @pstart, @pstop, @dom);
-        open(FH,"/data/mta_www/mta_interrupt/house_keeping/rad_zone_info");
+        open(FH,"$house_keeping/rad_zone_info");
 
         @ind    = ();
         @rtime  = ();

@@ -126,7 +126,7 @@ or if the data older than 2011
 		----if you use all_data, you can create top html pages, too, but you will
 		    lose all indivisual html manually modified. SO AVOID TO USE ALL_DATA
 
-9. Print top level html pages
+9. Print top level html pages		<---- probably don't need to run this after step 8, but check
 
    	perl $bin_dir/sci_run_print_top_html.perl --- top html pages
 	input: all_data	
