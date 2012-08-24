@@ -1,0 +1,4 @@
+source /home/mta/.ascrc
+
+/data/mta/Script/Interrupt/Scripts/sci_run_get_radiation_data.py
+/data/mta/Script/Interrupt/Scripts/sci_run_get_rad_zone_info.py

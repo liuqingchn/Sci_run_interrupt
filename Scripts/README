@@ -1,0 +1,184 @@
+
+#########################
+Science Run Interruption
+#########################
+
+---- last update May 02, 2012 -----
+
+This directory keeps scripts which generate plots of ACE, Ephin, and GOES radiation plots around
+science run interruptions. 
+
+
+How to Run the Scripts
+-----------------------
+
+1. Go to /data/mta/Script/Interrupt/Exc
+
+2. Edit interruption_time_list
+
+   * add <event name> <starting time> <stopping time> <gap> <operation type>
+        where
+        <event name>:           name of the event; usually in the from of 20120317 (yyyymmdd)
+        <strting time>:         interruption starting time in UTC in the format of 2011:08:04:07:03
+        <stopping time>:        interruption ending time in UTC in the format of   2011:08:07:10:25
+        <gap>:                  total lost science time in ksec, excluding radiation zone. this will
+                                be updated later; so a raugh estimate is fine
+        <operation type>:       auto or manual
+
+        Example input: 20110804        2011:08:04:07:03        2011:08:07:10:25        186.5   auto
+
+    * you can add more than one event if it is needed
+
+3.  Check the radiation data and radiation zone information  are update.
+
+    * they are in house_keeping directory.
+                rad_data<yyyy>, e.g. rad_data2012 is the radiation data
+
+                rad_zone_info is the data for radiation zone information
+
+4.  Extract data
+    * ssh to mta@rhodes (this will be chnaged to vader someday)
+    * Set up asc environment by setascds
+	You may want to run:
+		rm -rf param
+		mkdir param
+		source /home/mta/bin/reset_param
+		setenv PFILES "${PDIRS}"
+		set path = (/home/ascds/DS.release/bin/  $path)
+
+    * Go to /data/mta/Script/Interrupt/Exc (must have Working_dir)
+    * Type:  
+        bin_dir/extract_data.py
+        
+      this will ask the input file name. Type: interruption_time_list (or whatever you crated.)
+
+    This will update:
+	interruption_time_list for interrupted time -- copy this to : house_keeping/all_data
+        house_keeping/rad_zone_list
+
+    and create:
+        data_dir/<event>_dat.txt        ---- ACE data
+        data_dir/<evnet>_eph.txt        ---- Ephin data
+        data_dir/<event>_goes.txt       ---- GOES data
+
+5. Plot data
+   * ssh to mta@vader
+   * Set up asc environment by setascds
+   * setenv PYTHONPATH "/usr/local/lib/python2.6/site-packages:$PYTHONPATH"
+   * Go to /data/mta/Script/Interrupt/Exc
+   * Type:
+        bin_dir/plot_data.py
+        
+      this will ask the input file name. Type: interruption_time_list (or whatever you crated.)
+
+   This will create:
+        plot_dir/<event>.png (and possibly <event>_pt2.png etc)
+        ephin_dir/<event>_eph.png (and possibly <event>_eph_pt2.png etc)
+        goes_dir/<event>_goes.png (and possibly <event>_goes_pt2.png etc)
+        intro_dir/<event>_intro.png
+
+6. Create/update html page
+
+   * Type:
+        bin_dir/sci_run_print_html.py
+
+        type: interruption_time_list (or whatever you crated.)
+                ---- this will create indivisual html page.
+
+   * Type again: 
+        bin_dir/sci_run_print_html.py
+
+        this tiime, type: NA
+                ---- this will update the front page html pages.
+
+7. Create Note page
+
+   * Go to note_dir, create <event>.txt
+
+   * Copy related email, operation report, weekly report to the page. 
+
+
+Current Directory Setting
+---------------------------
+
+dir_list is currently kept in: /data/mta/Script/Interrupt/house_keeping2/.
+
+'/data/mta/Script/Interrupt/Scripts/'                           :bin_dir
+'/data/mta/Script/Interrupt/house_keeping/Info_dir/'            :bindata_dir
+'/data/mta/Script/Interrupt/house_keeping/'                     :house_keeping
+'/data/mta_www/mta_interrupt_py/'                               :web_dir
+'/data/mta_www/mta_interrupt_py/Data_dir/'                      :data_dir
+'/data/mta_www/mta_interrupt_py/Main_plot/'                     :plot_dir
+'/data/mta_www/mta_interrupt_py/Html_dir/'                      :html_dir
+'/data/mta_www/mta_interrupt_py/Stat_dir/'                      :stat_dir
+'/data/mta_www/mta_interrupt_py/Ephin_plot/'                    :ephin_dir
+'/data/mta_www/mta_interrupt_py/GOES_plot/'                     :goes_dir
+'/data/mta_www/mta_interrupt_py/Note_dir/'                      :note_dir
+'/data/mta_www/mta_interrupt_py/Intro_plot/'                    :intro_dir
+
+
+house_keeping directory
+-----------------------
+
+all_data:                       the list of the all events 
+rad_data<yyyy>:                 the radiation data for the year <yyyy>
+rad_zone_info:                  the radiation zone information
+rad_zone_list:                  the list of radiation zone for each <event>
+main_html_page_header_template: a html page template
+sub_html_template:              a html page template: indivisual page
+sub_html_template_2011:         a html page template: indivisual page after 2011
+
+Info_dir:                       a directory contains information needed to run some scripts
+
+web_dir directory
+----------------
+
+Ephin_plot                        Ephin plots
+GOES_plot                         GOES plots
+Html_dir                          indivisual event html pages
+Intro_plot                        Intro plots
+Main_plot                         ACE plots
+Note_dir                          note for each event
+Stat_dir                          statistics for ace, ephin, and goes 
+auto_shut.html                    a html page showing event with auto shut down
+hardness_order.html               a html page with events ordered in hardness
+index.html -> time_order.html     symbolic linked page
+manual_shut.html                  a html page showing events with manual shut down
+time_order.html                   a html page showing events in time order (newest to oldest)
+
+
+bin_dir (script dir)
+--------------------
+
+all python scripts are written for ver. 2.6
+
+compute_ace_stat.py             find hradness and other statistics of the radiation curves
+compute_stat.py                 compute statistics for the data given 
+convertTimeFormat.py            contains functions related time format conversions
+extract_data.py                 extract data needed for sci. run interruption plots
+extract_ephin.py                extract Ephin data and plot the results 
+extract_goes.py                 extract GOES-11/15 data and plot the results 
+extract_noaa.py                 extract noaa data
+interruptFunctions.py           collections of python scripts for science run interruption computation
+interruptPlotFunctions.py       a collections of python scripts related to science run interruption ploting routines
+plot_data.py                    plot all science run interruption related data
+plot_ephin.py                   plot Ephin data
+plot_goes.py                    plot GOES data
+plot_noaa_rad.py                plot ACE data
+README                          this file
+sci_run_add_to_rad_zone_list.py add radiation zone list around a given date
+sci_run_compute_gap.py          compute science time lost (interuption total - radiation zone)
+sci_run_get_radiation_data.py   get NOAA data for radiaiton plots 
+sci_run_get_rad_zone_info.py    find expected radiation zone timing
+sci_run_main_script             tsh script to run sci_run_get_radiation_data.py and sci_run_get_rad_zone_info.py
+sci_run_print_html.py           print out html pagess  
+sci_run_wrap_script             a script set up the environment for sci_run_main_script
+
+
+cron job
+---------
+
+0 2 * * *  cd /data/mta/Script/Interrupt/Exc; /data/mta/Script/Interrupt/Scripts/sci_run_wrap_script > $HOME/Logs/sci_run_interrupt_py.cron  2>&1
+
+
+
