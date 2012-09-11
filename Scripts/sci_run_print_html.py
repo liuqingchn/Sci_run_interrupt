@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: May 02, 2012                                       #
+#               last update: Sep 11, 2012                                       #
 #                                                                               #
 #################################################################################
 
@@ -136,11 +136,11 @@ def printEachHtml(event, start, stop, gap, stopType):
 
     data = open(file).read()
 
-    data = re.sub('#header_title#',  event, data)
-    data = re.sub('#main_title#',    event,  data)
-    data = re.sub('#sci_run_stop#',  start,  data)
-    data = re.sub('#sci_run_start#', stop,   data)
-    data = re.sub('#interruption#',  gap,    data)
+    data = re.sub('#header_title#',  event,    data)
+    data = re.sub('#main_title#',    event,    data)
+    data = re.sub('#sci_run_stop#',  start,    data)
+    data = re.sub('#sci_run_start#', stop,     data)
+    data = re.sub('#interruption#',  gap,      data)
     data = re.sub('#trigger#',       stopType, data)
 
     noteN = event + '.txt'
@@ -243,9 +243,14 @@ def printEachPannel(event, start, stop, gap, stopType, out):
     line = '<a href="' + address + event + '.txt">Note</a>\n'
     out.write(line)
 
+    address = html_dir.replace('/data/mta_www/', '/mta_days/')
+    line = '<a href="' + address + event + '.html">Plots</a>\n'
+    out.write(line)
+
+
     out.write('<br />\n')
     out.write('<spacer type=vertical size=10>\n')
-    out.write('<li>\n')
+    out.write('</li>\n')
 
 
 #----------------------------------------------------------------------------------------------------
@@ -311,6 +316,7 @@ def printSubHtml():
             inList = timeOrdered
 
         out.write('</table>\n')
+        out.write('<ul>\n')
 
 #
 #--- now create each event pannel
@@ -325,6 +331,7 @@ def printSubHtml():
 
             printEachPannel(event, start, stop, gap, stopType, out)
 
+        out.write('</ul>\n')
         out.write('</body>')
         out.write('</html>')
 
