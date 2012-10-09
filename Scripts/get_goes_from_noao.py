@@ -6,7 +6,7 @@
 #                                                                                                               #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                                           #
 #                                                                                                               #
-#           last update Jun 14, 2012                                                                            #
+#           last update Oct 08, 2012                                                                            #
 #                                                                                                               #
 #################################################################################################################
 
@@ -132,7 +132,7 @@ def get_goes_from_noao():
 #--- notify admim the fact that the data were copied
 #
 
-        cmd = 'cat ' + temp_save + ' | mailx -s"Subject: NOAO Data Copied" -rcus@head.cfa.harvard.edu isobe@head.cfa.harvard.edu'
+        cmd = 'cat ' + temp_save + ' | mailx -s"Subject: NOAO Data Copied" isobe@head.cfa.harvard.edu'
         os.system(cmd)
 
     else:
@@ -145,7 +145,7 @@ def get_goes_from_noao():
         f2.write('NOAO Site:  http://www.swpc.noaa.gov/ftpdir/lists/pchan/ \n\n')
         f2.close()
 
-        cmd = 'cat ' + temp_save + ' | mailx -s"Subject:  No NOAO Data Copied" -rcus@head.cfa.harvard.edu isobe@head.cfa.harvard.edu'
+        cmd = 'cat ' + temp_save + ' | mailx -s"Subject:  No NOAO Data Copied" isobe@head.cfa.harvard.edu'
         os.system(cmd)
 
     cmd = 'rm ' + temp_save
