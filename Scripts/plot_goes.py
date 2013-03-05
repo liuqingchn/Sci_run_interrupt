@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: May 02, 2012                                       #
+#               last update: Mar 05, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -30,7 +30,7 @@ import matplotlib.lines as lines
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -69,7 +69,7 @@ import interruptPlotFunctions as ptrf
 #--- plotGOESMain: read GOES data and plot them.                                                               ---
 #-----------------------------------------------------------------------------------------------------------------
 
-def plotGOESMain(event, start, stop):
+def plotGOESMain(event, start, stop, comp_test='NA'):
 
     'read GOES data from data_dir and plot them. Input: event, interruption start and stop time (e.g. 20120313        2012:03:13:22:41        2012:03:14:13:57)'
 
@@ -82,7 +82,13 @@ def plotGOESMain(event, start, stop):
 #--- read GOES data
 #
 
-    file = data_dir + event + '_goes.txt'
+    if comp_test == 'test':
+        file = test_data_dir + event + '_goes.txt'
+        plot_out = test_goes_dir
+    else:
+        file = data_dir + event + '_goes.txt'
+        plot_out = goes_dir
+
     f    = open(file, 'r')
     data = [line.strip() for line in f.readlines()]
     f.close()
@@ -148,7 +154,7 @@ def plotGOESMain(event, start, stop):
 #
     if pannelNum == 1:
         plotGOES(dofy, p1, p2, p5, ydate1, ydate2, plotStart, plotStop, radZone)
-        cmd = 'mv ./out.png ' + goes_dir + event + '_goes.png'
+        cmd = 'mv ./out.png ' + plot_out + event + '_goes.png'
         os.system(cmd)
 #
 #--- if the interruption period cannot be covered by one plotting panel, create as many panels as we need to cover the period.
@@ -160,15 +166,15 @@ def plotGOESMain(event, start, stop):
             pend = pstart + 5
             if i == 1:
                 plotGOES(dofy, p1, p2, p5, ydate1, 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + goes_dir + event + '_goes.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_goes.png'
                 os.system(cmd)
             elif i == pannelNum:
                 plotGOES(dofy, p1, p2, p5, 'NA', ydate2, pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + goes_dir + event + '_goes_pt'+ str(i) +  '.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_goes_pt'+ str(i) +  '.png'
                 os.system(cmd)
             else:
                 plotGOES(dofy, p1, p2, p5, 'NA', 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + goes_dir + event + '_goes_pt'+ str(i) +  '.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_goes_pt'+ str(i) +  '.png'
                 os.system(cmd)
             pstart = pend
 

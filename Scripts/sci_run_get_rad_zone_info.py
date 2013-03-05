@@ -8,7 +8,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: May 21, 2012                                               #
+#               last update: Mar 04, 2013                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -21,7 +21,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -35,15 +35,13 @@ for ent in data:
 #
 #--- append a path to a privte folder to python directory
 #
-
 sys.path.append(bin_dir)
-
+sys.path.append(mta_dir)
 #
 #--- converTimeFormat contains MTA time conversion routines
 #
-
-import convertTimeFormat as tcnv
-
+import convertTimeFormat    as tcnv
+import mta_common_functions as mcf
 
 #------------------------------------------------------------------------------------------------------------------------
 #--- cleanEntry: Clean up Radiation zone Entry/Exist information                                                       --
@@ -100,14 +98,20 @@ def extractRadZoneInfo(year, month, type):
 #
 
     name = str.upper(tcnv.changeMonthFormat(month)) + '*'
-#>    line = 'cat ' + ' /data/mpcrit1/mplogs/'+ str(year) + '/' +  name + '/ofls/*dot|grep ' + etype + '  >  /tmp/mta/zout'
-    line = 'cat ' + ' /data/mpcrit1/mplogs/'+ str(year) + '/' +  name + '/ofls/*dot|grep ' + etype + ' >  ./zout'
+    if comp_test == 'test':
+        line = 'cat ' + house_keeping + 'Test_prep/mp_data/*|grep ' + etype + ' >  ./zout'
+    else:
+#>        line = 'cat ' + ' /data/mpcrit1/mplogs/'+ str(year) + '/' +  name + '/ofls/*dot|grep ' + etype + '  >  /tmp/mta/zout'
+        line = 'cat ' + ' /data/mpcrit1/mplogs/'+ str(year) + '/' +  name + '/ofls/*dot|grep ' + etype + ' >  ./zout'
 
     os.system(line)
 
     name = str.upper(tcnv.changeMonthFormat(month2)) + '*'
-#>    line = 'cat ' + ' /data/mpcrit1/mplogs/' + str(year2) + '/' +  name + '/ofls/*dot|grep ' + etype + '  >>  /tmp/mta/zout'
-    line = 'cat ' + ' /data/mpcrit1/mplogs/' + str(year2) + '/' +  name + '/ofls/*dot|grep ' + etype + ' >>  ./zout'
+    if comp_test == 'test':
+        line = 'cat ' + house_keeping + 'Test_prep/mp_data/' + str(year2) + '/' +  name + '/ofls/*dot|grep ' + etype + ' >>  ./zout'
+    else:
+#>        line = 'cat ' + ' /data/mpcrit1/mplogs/' + str(year2) + '/' +  name + '/ofls/*dot|grep ' + etype + '  >>  /tmp/mta/zout'
+        line = 'cat ' + ' /data/mpcrit1/mplogs/' + str(year2) + '/' +  name + '/ofls/*dot|grep ' + etype + ' >>  ./zout'
 
     os.system(line)
 
@@ -143,7 +147,12 @@ def getRadZoneInfo():
 #--- read the past radiation zone information
 #
 
-    file = house_keeping + 'rad_zone_info'
+    if comp_test == 'test':
+        file = test_web_dir + 'rad_zone_info'
+    else:
+        file = house_keeping + 'rad_zone_info'
+
+
     f    = open(file, 'r')
     radZone = [line.strip() for line in f.readlines()]
 
@@ -151,9 +160,13 @@ def getRadZoneInfo():
 #--- find out today's date in Local time frame
 #
 
-    today = tcnv.currentTime('local')
-    year  = today[0];
-    month = today[1];
+    if comp_test == 'test':
+        year  = 2012
+        month = 10
+    else:
+        today = tcnv.currentTime('local')
+        year  = today[0];
+        month = today[1];
    
 #
 #--- extract radiation zone information of "ENTRY" and "EXIT"
@@ -217,17 +230,20 @@ def getRadZoneInfo():
 #--- move the old file
 #
 
-    oldFile = house_keeping + 'rad_zone_info~'
-    crtFile = house_keeping + 'rad_zone_info'
+    if comp_test == 'test':
+        crtFile = test_web_dir + 'rad_zone_info'
+    else:
+        oldFile = house_keeping + 'rad_zone_info~'
+        crtFile = house_keeping + 'rad_zone_info'
 
-    cmd     = 'chmod 775 ' + crtFile + ' ' +  oldFile
-    os.system(cmd)
+        cmd     = 'chmod 775 ' + crtFile + ' ' +  oldFile
+        os.system(cmd)
 
-    cmd     = 'mv ' + crtFile + ' ' + oldFile
-    os.system(cmd)
-
-    cmd     = 'chmod 644 ' +  oldFile
-    os.system(cmd)
+        cmd     = 'mv ' + crtFile + ' ' + oldFile
+        os.system(cmd)
+    
+        cmd     = 'chmod 644 ' +  oldFile
+        os.system(cmd)
 
 
     f = open(crtFile, 'w')
@@ -247,13 +263,33 @@ def getRadZoneInfo():
 
     f.close()
 
-
-
-
 #------------------------------------------------------------------------------------------
 
-
 if __name__ == '__main__':
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == 'test':               #---- this is a test case
+            comp_test = 'test'
+        else:
+            comp_test = 'real'
+    else:
+            comp_test = 'real'
+#
+#--- if this is a test case, check whether output file exists. If not, creaete it
+#
+    if comp_test == 'test':
+        chk = mcf.chkFile(test_web_dir)
+        if chk == 0:
+            cmd = 'mkdir ' + test_web_dir
+            os.system(cmd)
+#
+#--- prepare for test
+#
+        cmd = 'cp ' + house_keeping + 'Test_prep/rad_zone_info '  + test_web_dir + '/.'
+        os.system(cmd)
+#
+#--- now call the main function
+#
 
     getRadZoneInfo()
 

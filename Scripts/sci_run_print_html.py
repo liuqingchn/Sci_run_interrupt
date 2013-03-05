@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Sep 11, 2012                                       #
+#               last update: Oct 24, 2012                                       #
 #                                                                               #
 #################################################################################
 
@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -32,7 +32,7 @@ for ent in data:
     exec "%s = %s" %(var, line)
 
 #
-#--- append a path to a privte folder to python directory
+#--- append a path to a private folder to python directory
 #
 
 sys.path.append(bin_dir)
@@ -157,9 +157,9 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#ace_table#',    stat,    data)
 
-    line =  event + '.png"'
+    line =  event + '.png'
     for i in range(2, pannelNum+1):
-        padd = ' width=100%>\n<br />\n<img src = "../Main_plot/' + event + '_pt' + str(i) + '.png" '
+        padd = ' alt="main plot" style="width:100%">\n<br />\n<img src = "../Main_plot/' + event + '_pt' + str(i) + '.png '
 	line = line + padd
 
     data = re.sub('#ace_plot#', line , data)
@@ -175,9 +175,9 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#eph_table#',    stat,    data)
 
-    line =  event + '_eph.png"'
+    line =  event + '_eph.png'
     for i in range(2, pannelNum+1):
-        padd = ' width=100%>\n<br />\n<img src = "../Ephin_plot/' + event + '_eph_pt' + str(i) + '.png" '
+        padd = ' alt="eph plot" style="width:100%">\n<br />\n<img src = "../Ephin_plot/' + event + '_eph_pt' + str(i) + '.png '
 	line = line + padd
 
     data = re.sub('#eph_plot#', line , data)
@@ -193,9 +193,9 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#goes_table#',    stat,    data)
 
-    line =  event + '_goes.png"'
+    line =  event + '_goes.png'
     for i in range(2, pannelNum+1):
-        padd = ' width=100%> \n<br />\n<img src = "../GOES_plot/' + event + '_goes_pt' + str(i) + '.png" '
+        padd = ' alt="goes plot" style="width:100%"> \n<br />\n<img src = "../GOES_plot/' + event + '_goes_pt' + str(i) + '.png '
 	line = line + padd
 
     data = re.sub('#goes_plot#', line , data)
@@ -219,14 +219,14 @@ def printEachPannel(event, start, stop, gap, stopType, out):
     'create each event pannel for the top html pages. input: event, start, stop, gap, stopType, out, where out is output hander'
 
     out.write('<li style="text-align:left;font-weight:bold;padding-bottom:20px">\n')
-    out.write('<table border=0 cellpadding=3 cellspacing=3><tr>\n')
+    out.write('<table style="border-width:0px"><tr>\n')
     line = '<td>Science Run Stop: </td><td> ' + start + '</td><td>Start:  </td><td>' + stop + '</td>'
     out.write(line)
     line = '<td>Interruption: </td><td> %4.1f ks</td><td>%s</td>\n' %(float(gap), stopType)
     out.write(line)
     out.write('</tr></table>\n')
     address = html_dir.replace('/data/mta_www/', '/mta_days/')
-    line = '<a href="' + address + event + '.html"><img src="./Intro_plot/' + event + '_intro.png" width=100% height=20%></a>\n'
+    line = '<a href="' + address + event + '.html"><img src="./Intro_plot/' + event + '_intro.png" alt="intro plot" style="width:100%;height:20%"></a>\n'
     out.write(line)
 
     address = data_dir.replace('/data/mta_www/', '/mta_days/')
@@ -249,7 +249,8 @@ def printEachPannel(event, start, stop, gap, stopType, out):
 
 
     out.write('<br />\n')
-    out.write('<spacer type=vertical size=10>\n')
+#    out.write('<spacer type=vertical size=10>\n')
+    out.write('<div style="padding-bottom:10px">\n</div>\n')
     out.write('</li>\n')
 
 
@@ -298,7 +299,7 @@ def printSubHtml():
         data  = re.sub("#DATE#", today, data)
         out.write(data)
 
-        out.write('<table border=0 cellpadding=3 cellspacing=3>\n')
+        out.write('<table style="border-width:0px">\n')
         out.write('<tr><td>\n')
 
 
@@ -354,7 +355,7 @@ def autoHtml(out):
     out.write('Manually Shutdown List</a>\n')
     out.write('</td><td>\n')
     out.write('<a href="hardness_order.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Hardness Ordered List</a.\n')
+    out.write('Hardness Ordered List</a>\n')
     out.write('</td><td>\n')
 
 #---------------------------------------------------------------------------------------------------
@@ -374,7 +375,7 @@ def manualHtml(out):
     out.write('Manually Shutdown List</a>\n')
     out.write('</td><td>\n')
     out.write('<a href="hardness_order.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Hardness Ordered List</a.\n')
+    out.write('Hardness Ordered List</a>\n')
     out.write('</td><td>\n')
 
 #---------------------------------------------------------------------------------------------------
@@ -394,7 +395,7 @@ def hardnessHtml(out):
     out.write('</td><td>\n')
     out.write('<em class="lime" style="font-weight:bold;font-size:120%">\n')
 #    out.write('<a href="hardness_order.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Hardness Ordered List</a.\n')
+    out.write('Hardness Ordered List</a>\n')
     out.write('</td><td>\n')
 
 #---------------------------------------------------------------------------------------------------
@@ -405,16 +406,16 @@ def timeOrderHtml(out):
 
     out.write('<em class="lime" style="font-weight:bold;font-size:120%">\n')
 #    out.write('<a href="time_order.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Time Ordered List</a>\n')
+    out.write('Time Ordered List</em>\n')
     out.write('</td><td>\n')
     out.write('<a href="auto_shut.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Auto Shutdown List</em>\n')
+    out.write('Auto Shutdown List</a>\n')
     out.write('</td><td>\n')
     out.write('<a href="manual_shut.html" style="font-weight:bold;font-size:120%">\n')
     out.write('Manually Shutdown List</a>\n')
     out.write('</td><td>\n')
     out.write('<a href="hardness_order.html" style="font-weight:bold;font-size:120%">\n')
-    out.write('Hardness Ordered List</a.\n')
+    out.write('Hardness Ordered List</a>\n')
     out.write('</td><td>\n')
 
 

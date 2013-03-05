@@ -6,7 +6,7 @@
 #                                                                                                               #
 #           author: t. isobe (tisobe@cfa.harvard.edu)                                                           #
 #                                                                                                               #
-#           last update Oct 08, 2012                                                                            #
+#           last update Mar 04, 2013                                                                            #
 #                                                                                                               #
 #################################################################################################################
 
@@ -17,12 +17,11 @@ import os
 import string
 import getpass
 
-
 #
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -34,24 +33,19 @@ for ent in data:
     exec "%s = %s" %(var, line)
 
 #
-#--- append path to a privte folder
-#
-    sys.path.append(bin_dir)
+#--- append a path to a privte folder to python directory
+#   
+sys.path.append(bin_dir)
+sys.path.append(mta_dir)
 #
 #--- converTimeFormat contains MTA time conversion routines
-#
-import convertTimeFormat as tcnv
-
-#
-#--- Science Run Interrupt related funcions shared
-#
-
-import interruptFunctions as itrf
+#   
+import convertTimeFormat    as tcnv
+import mta_common_functions as mcf
 
 #
 #--- setting temp directory
 #
-
 user = getpass.getuser()
 user = user.strip()
 
@@ -75,7 +69,11 @@ def get_goes_from_noao():
 #
 #--- read the list of the data which we already copied
 #
-    goes_list = house_keeping + '/NOAO_data/past_goes_list'
+    if comp_test == 'test':
+        goes_list = web_dir       + '/NOAO_data/past_goes_list'
+    else:
+        goes_list = house_keeping + '/NOAO_data/past_goes_list'
+
     f         = open(goes_list, 'r')
     past_list = [line.strip() for line in f.readlines()]
     f.close()
@@ -113,7 +111,10 @@ def get_goes_from_noao():
 
         f  = open(goes_list, 'a')
         for ent in new_data:
-            out = house_keeping + '/NOAO_data/' + ent
+            if comp_test == 'test':
+                out = web_dir + '/NOAO_data/' + ent
+            else:
+                out = house_keeping + '/NOAO_data/' + ent
     
             cmd = 'lynx -source http://www.swpc.noaa.gov/ftpdir/lists/pchan/' + ent + '>' + out
             os.system(cmd)
@@ -132,7 +133,10 @@ def get_goes_from_noao():
 #--- notify admim the fact that the data were copied
 #
 
-        cmd = 'cat ' + temp_save + ' | mailx -s"Subject: NOAO Data Copied" isobe@head.cfa.harvard.edu'
+        if comp_test == 'test':
+            cmd = 'cat ' + temp_save + ' | mailx -s"Subject: NOAO Data Copied --- this is a test" isobe@head.cfa.harvard.edu'
+        else:
+            cmd = 'cat ' + temp_save + ' | mailx -s"Subject: NOAO Data Copied" isobe@head.cfa.harvard.edu'
         os.system(cmd)
 
     else:
@@ -145,7 +149,11 @@ def get_goes_from_noao():
         f2.write('NOAO Site:  http://www.swpc.noaa.gov/ftpdir/lists/pchan/ \n\n')
         f2.close()
 
-        cmd = 'cat ' + temp_save + ' | mailx -s"Subject:  No NOAO Data Copied" isobe@head.cfa.harvard.edu'
+        if comp_test == 'test':
+            cmd = 'cat ' + temp_save + ' | mailx -s"Subject:  No NOAO Data Copied --- this is a test" isobe@head.cfa.harvard.edu'
+        else:
+            cmd = 'cat ' + temp_save + ' | mailx -s"Subject:  No NOAO Data Copied" isobe@head.cfa.harvard.edu'
+
         os.system(cmd)
 
     cmd = 'rm ' + temp_save
@@ -156,6 +164,35 @@ def get_goes_from_noao():
 #--------------------------------------------------------------------------------------------------------------
 
 if __name__ == "__main__":
+
+    if len(sys.argv) == 2:
+        if sys.argv[1] == 'test':               #---- this is a test case
+            comp_test = 'test'
+        else:
+            comp_test = 'real'
+    else:
+            comp_test = 'real'
+#
+#--- if this is a test case, check whether output file exists. If not, creaete it
+#   
+    if comp_test == 'test':
+        chk = mcf.chkFile(test_web_dir)
+        if chk == 0:
+            cmd = 'mkdir ' + test_web_dir
+            os.system(cmd)
+#
+#--- prepare for test
+#
+        chk = mcf.chkFile(test_web_dir, "NOAO_data")
+        if chk == 0:
+            cmd = 'mkdir ' + test_web_dir + 'NOAO_data/'
+            os.system(cmd)
+        cmd = 'cp ' + house_keeping + 'NOAO_data/past_goes_list ' + test_web_dir + 'NOAO_data/.'
+        os.system(cmd)
+
+#
+#--- now call the main function
+#
 
     get_goes_from_noao()
 

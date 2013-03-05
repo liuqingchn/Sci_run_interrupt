@@ -6,7 +6,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: May 02, 2012                                               #
+#               last update: Mar 05, 2013                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -29,7 +29,7 @@ import matplotlib.lines as lines
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -67,7 +67,7 @@ import interruptPlotFunctions as ptrf
 #---startACEPlot: the main function to plot NOAA data                            ---
 #-----------------------------------------------------------------------------------
 
-def startACEPlot(event, start, stop):
+def startACEPlot(event, start, stop, comp_test = 'NA'):
 
 
     'for a gien event, start and stop data, initiate ACE plottings.'
@@ -84,16 +84,24 @@ def startACEPlot(event, start, stop):
 #
 #--- plot ACE Data
 #
-    aceDataPlot(event, year1, ydate1, year2, ydate2)
+    aceDataPlot(event, year1, ydate1, year2, ydate2, comp_test)
 
 
 #-----------------------------------------------------------------------------------
 #--- aceDataPlot: ACE data plotting manager                                      ---
 #-----------------------------------------------------------------------------------
 
-def aceDataPlot(name, startYear, startYday, stopYear, stopYday):
+def aceDataPlot(name, startYear, startYday, stopYear, stopYday, comp_test = 'NA'):
 
     'manage ACE data plot routines. Input: event name, interruption starting time, and interruption ending time in year:yday format'
+
+#
+#--- check whether this is a test case
+#
+    if comp_test == 'test':
+        plot_out = test_plot_dir
+    else:
+        plot_out = plot_dir
 
 #
 #--- set the plotting range
@@ -121,7 +129,7 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday):
     p1060 = []
     ani   = []
 
-    readACEData(name, dofy, e38, e175, p47, p112, p310, p761, p1060, ani)
+    readACEData(name, dofy, e38, e175, p47, p112, p310, p761, p1060, ani, comp_test)
 #
 #--- if the ending data is in the following year
 #
@@ -138,7 +146,7 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday):
 
     if period == 1:
         plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, stopYday, plotStart, plotStop, radZone)
-        cmd = 'mv ./out.png ' + plot_dir + name + '.png'
+        cmd = 'mv ./out.png ' + plot_out + name + '.png'
         os.system(cmd)
 
 #
@@ -152,15 +160,15 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday):
             pend = pstart + 5
             if i == 1:
                 plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_dir + name + '.png'
+                cmd = 'mv ./out.png ' + plot_out + name + '.png'
                 os.system(cmd)
             elif i == period:
                 plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', stopYday, pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_dir + name + '_pt'+ str(i) + '.png'
+                cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
                 os.system(cmd)
             else:
                 plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_dir + name + '_pt'+ str(i) + '.png'
+                cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
                 os.system(cmd)
 
             pstart  = pend
@@ -170,11 +178,15 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday):
 #--- readACEData: reading ACE Data from ACE data table                           ---
 #-----------------------------------------------------------------------------------
 
-def readACEData(file, dofy, elec38, elec175, proton47, proton112, proton310, proton761, proton1060, aniso):
+def readACEData(file, dofy, elec38, elec175, proton47, proton112, proton310, proton761, proton1060, aniso, comp_test):
 
     'reading an ACE data file located in a Interrupt Data_dir'
 
-    input = data_dir + file + '_dat.txt'            #--- data file format is e.g.: 20120313_dat.txt
+    if comp_test == 'test':
+        input = test_data_dir + file + '_dat.txt'       #--- test data file
+    else:
+        input = data_dir + file + '_dat.txt'            #--- data file format is e.g.: 20120313_dat.txt
+
     f     = open(input, 'r')
     data  = [line.strip() for line in f.readlines()]
     f.close()

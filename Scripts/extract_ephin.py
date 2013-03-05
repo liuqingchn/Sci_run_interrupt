@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: May 18, 2012                                       #
+#               last update: Mar 01, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -52,7 +52,7 @@ import interruptFunctions as itrf
 #--- ephinDataExtract: extract EPHIN data and create a data table                                                  ---
 #---------------------------------------------------------------------------------------------------------------------
 
-def ephinDataExtract(event, start, stop):
+def ephinDataExtract(event, start, stop, comp_test ='NA'):
 
     "extract EPIN related quantities and creates a data table for given event, start and stop time (format: 2012:03:13:22:41)"
     begin = start + ':00'               #---- to use dateFormatCon correctly, need to add "sec" part
@@ -263,7 +263,11 @@ def ephinDataExtract(event, start, stop):
 #--- print out data
 #
 
-    file = data_dir + event + '_eph.txt'
+    if comp_test == 'test':
+        file = test_data_dir + event + '_eph.txt'
+    else:
+        file = data_dir + event + '_eph.txt'
+
     f    = open(file, 'w')
     line = 'Science Run Interruption: ' + start + '\n\n'
     f.write(line)
@@ -294,7 +298,7 @@ def ephinDataExtract(event, start, stop):
 #--- computeEphinStat: computing Ephin statitics                  ---
 #--------------------------------------------------------------------
 
-def computeEphinStat(event, startTime):
+def computeEphinStat(event, startTime, comp_test = 'NA'):
 
     'for give event name and interruption stating time, read the data from ephin data, and compute statistics'
 
@@ -302,7 +306,11 @@ def computeEphinStat(event, startTime):
 
     (year, month, day, hours, minutes, seconds, interruptTime) = tcnv.dateFormatCon(begin)
 
-    file = data_dir + event + '_eph.txt'
+    if comp_test == 'test':
+        file = test_data_dir + event + '_eph.txt'
+    else:
+        file = data_dir + event + '_eph.txt'
+
     f    = open(file, 'r')
     data = [line.strip() for line in f.readlines()]
     f.close()
@@ -418,7 +426,12 @@ def computeEphinStat(event, startTime):
     e1300Sig  = math.sqrt(e1300Avg2/e2cnt - e1300Avg * e1300Avg)
 
 #    file = web_dir + 'Ephin_plot/' + event + '_txt'
-    file = stat_dir + event + '_ephin_stat'
+
+    if comp_test == 'test':
+        file = test_stat_dir + event + '_ephin_stat'
+    else:
+        file = stat_dir + event + '_ephin_stat'
+
     f    = open(file, 'w')
     f.write('\t\tAvg\t\t\tMax\t\tTime\t\tMin\t\tTime\t\tValue at Interruption Started\n')
     f.write('--------------------------------------------------------------------------------------------------------------------------\n')

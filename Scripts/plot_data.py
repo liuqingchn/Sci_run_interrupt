@@ -32,7 +32,7 @@ import matplotlib.lines as lines
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -100,9 +100,16 @@ def plot_data():
     
     'plot all data related to the science run interruption (NOAA/EPHIN/GOES)'
 
-    
     file = raw_input('Please put the intrrupt timing list: ')
-    f    = open(file, 'r')
+
+    if file == 'test':
+#
+#--- if this is a test case, prepare for the test
+#
+        comp_test = 'test'
+        file = test_web_dir +'test_date'
+
+    f     = open(file, 'r')
     data  = [line.strip() for line in f.readlines()]
     f.close()
 
@@ -118,24 +125,25 @@ def plot_data():
 #--- plot Ephin data
 #
 
-        ephin.plotEphinMain(event, start, stop)
+        ephin.plotEphinMain(event, start, stop, comp_test)
 
 #
 #---- plot GOES data
 #
-        goes.plotGOESMain(event, start, stop)
+        goes.plotGOESMain(event, start, stop, comp_test)
 
 #
 #---- plot other radiation data (from NOAA)
 #
 
-        noaa.startACEPlot(event, start, stop)
+        noaa.startACEPlot(event, start, stop, comp_test)
         
 #
 #---- create html pages
 #
 
-    html.printEachHtmlControl(file)
+    if comp_test != 'test':
+        html.printEachHtmlControl(file)
 
 
 

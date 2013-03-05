@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: May 02, 2012                                       #
+#               last update: Mar 01, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -34,42 +34,32 @@ for ent in data:
 #
 #--- append a path to a privte folder to python directory
 #
-
 sys.path.append(bin_dir)
-
+sys.path.append(mta_dir)
 #
 #--- converTimeFormat contains MTA time conversion routines
 #
-
-import convertTimeFormat as tcnv
-
+import convertTimeFormat    as tcnv
+import mta_common_functions as mcf
 #
 #--- Science Run Interrupt related funcions shared
 #
-
 import interruptFunctions as itrf
-
 #
 #---- EPHIN data extraction
 #
-
 import extract_ephin as ephin
-
 #
 #---- GOES data extraction
 #
-
 import extract_goes as goes
-
 #
 #---- ACE (NOAA) data extraction
 #
-
 import extract_noaa as noaa
-
 #
 #---- ACE (NOAA) statistics
-
+#
 import compute_ace_stat as astat
 
 #---------------------------------------------------------------------------------------------------------------------
@@ -82,11 +72,20 @@ def extract_data():
 
     
     file = raw_input('Please put the intrrupt timing list: ')
-#
-#--- update radiation zone list (rad_zone_list) for given period(s)
-#
 
-    itrf.sci_run_add_to_rad_zone_list(file)
+    if file == 'test':
+#
+#--- if this is a test case, prepare for the test
+#
+        comp_test = 'test'
+        prep_test()
+        file = test_web_dir +'test_date'
+    else:
+#
+#--- otherwise, update radiation zone list (rad_zone_list) for given period(s)
+#
+        comp_test = ''
+        itrf.sci_run_add_to_rad_zone_list(file)
 
 #
 #--- correct science run interruption time excluding radiation zones
@@ -111,35 +110,56 @@ def extract_data():
 #
 #--- extract ephin data
 #
-        ephin.ephinDataExtract(event, start, stop)
+        ephin.ephinDataExtract(event, start, stop, comp_test)
 
 #
 #--- compute ephin statistics
 #
-        ephin.computeEphinStat(event, start)
+        ephin.computeEphinStat(event, start, comp_test)
 
 #
 #---- extract GOES data
 #
 
-        goes.extractGOESData(event, start, stop)
+        goes.extractGOESData(event, start, stop, comp_test)
 
 #
 #---- compute GOES statistics
 #
-        goes.computeGOESStat(event, start)
+        goes.computeGOESStat(event, start, comp_test)
 
 #
 #---- extract ACE (NOAA) data
 #
-        noaa.startACEExtract(event, start, stop)
+        noaa.startACEExtract(event, start, stop, comp_test)
 
 #
 #---- compute ACE statistics
 #
-	astat.computeACEStat(event, start, stop)
+        astat.computeACEStat(event, start, stop, comp_test)
 
 
+
+#---------------------------------------------------------------------------------------------------------------------
+#--- prep_test: create a couple of directories for test data outupt                                                 --
+#---------------------------------------------------------------------------------------------------------------------
+
+def prep_test():
+#
+#--- if this is a test case, check whether output file exists. If not, creaete it
+#   
+    for ent in (test_web_dir, test_data_dir, test_plot_dir, test_html_dir, test_stat_dir, test_ephin_dir, test_goes_dir, test_note_dir, test_intro_dir):
+
+        chk   = mcf.chkFile(ent)
+        if chk == 0:
+            cmd = 'mkdir ' + ent
+            os.system(cmd)
+
+#
+#--- prepare for test
+#
+    cmd = 'cp ' + house_keeping + 'Test_prep/test_date ' + test_web_dir + '.'
+    os.system(cmd)
 
 #---------------------------------------------------------------------------------------------------------------------
 #--- start script                                                                                                  ---

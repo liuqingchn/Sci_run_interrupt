@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Jun 14, 2012                                       #
+#               last update: Mar 05, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -30,7 +30,7 @@ import matplotlib.lines as lines
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
@@ -70,7 +70,7 @@ import interruptPlotFunctions as ptrf
 #--- plotEphinMain: read Ephin data and plot them.                                                             ---
 #-----------------------------------------------------------------------------------------------------------------
 
-def plotEphinMain(event, start, stop):
+def plotEphinMain(event, start, stop, comp_test = 'NA'):
 
     'read Ephin data from data_dir and plot them. Input: event, interruption start and stop time (e.g. 20120313        2012:03:13:22:41        2012:03:14:13:57)'
 
@@ -83,7 +83,13 @@ def plotEphinMain(event, start, stop):
 #--- read EPHIN data
 #
 
-    file = data_dir + event + '_eph.txt'
+    if comp_test == 'test':
+        file     = test_data_dir + event + '_eph.txt'
+        plot_out = test_ephin_dir
+    else:
+        file     = data_dir + event + '_eph.txt'
+        plot_out = ephin_dir
+
     f    = open(file, 'r')
     data = [line.strip() for line in f.readlines()]
     f.close()
@@ -158,7 +164,7 @@ def plotEphinMain(event, start, stop):
 #
     if pannelNum == 1:
         plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, ydate2, plotStart, plotStop, radZone, dataset)
-        cmd = 'mv ./out.png ' + ephin_dir + event + '_eph.png'
+        cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
         os.system(cmd)
 #
 #--- if the interruption period cannot be covered by one plotting panel, create as many panels as we need to cover the period.
@@ -170,15 +176,15 @@ def plotEphinMain(event, start, stop):
             pend = pstart + 5
             if i == 1:
                 plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, 'NA', pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + ephin_dir + event + '_eph.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
                 os.system(cmd)
             elif i == pannelNum:
                 plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', ydate2, pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + ephin_dir + event + '_eph_pt'+ str(i) +  '.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
                 os.system(cmd)
             else:
                 plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', 'NA', pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + ephin_dir + event + '_eph_pt'+ str(i) +  '.png'
+                cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
                 os.system(cmd)
             pstart = pend
 

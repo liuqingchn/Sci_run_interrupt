@@ -3,7 +3,7 @@
 Science Run Interruption
 #########################
 
----- last update May 02, 2012 -----
+---- last update Mar 05, 2013 -----
 
 This directory keeps scripts which generate plots of ACE, Ephin, and GOES radiation plots around
 science run interruptions. 
@@ -36,8 +36,12 @@ How to Run the Scripts
 
                 rad_zone_info is the data for radiation zone information
 
+#---------------------------------------------------------------------------------------------------------
+####### if this is a test case, please run: "sci_run_wrap_script_test" before going to take the next step!!
+#---------------------------------------------------------------------------------------------------------
+
 4.  Extract data
-    * ssh to mta@rhodes (this will be chnaged to vader someday)
+    * ssh to mta@rhodes (this will be chnaged to r2d2 someday)
     * Set up asc environment by setascds
 	You may want to run:
 		rm -rf param
@@ -52,6 +56,8 @@ How to Run the Scripts
         
       this will ask the input file name. Type: interruption_time_list (or whatever you crated.)
 
+      ####### if this is a test case, type "test". It will create Test_out directory and put everything in there
+
     This will update:
 	interruption_time_list for interrupted time -- copy this to : house_keeping/all_data
         house_keeping/rad_zone_list
@@ -62,7 +68,7 @@ How to Run the Scripts
         data_dir/<event>_goes.txt       ---- GOES data
 
 5. Plot data
-   * ssh to mta@vader
+   * ssh to mta@r2d2
    * Set up asc environment by setascds
    * setenv PYTHONPATH "/usr/local/lib/python2.6/site-packages:$PYTHONPATH"
    * Go to /data/mta/Script/Interrupt/Exc
@@ -70,6 +76,8 @@ How to Run the Scripts
         bin_dir/plot_data.py
         
       this will ask the input file name. Type: interruption_time_list (or whatever you crated.)
+
+      ####### if this is a test case, type "test". It will create Test_out directory and put everything in there
 
    This will create:
         plot_dir/<event>.png (and possibly <event>_pt2.png etc)
@@ -90,6 +98,7 @@ How to Run the Scripts
 
         this tiime, type: NA
                 ---- this will update the front page html pages.
+                ---- don't forget to update house_keeping/all_data
 
 7. Create Note page
 

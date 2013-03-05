@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: May 02, 2012                                       #
+#               last update: Mar 01, 2013                                       #
 #                                                                               #
 #       P1    .8 -   4.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected        #
 #       P2   4.0 -   9.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected        #
@@ -24,7 +24,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -53,12 +53,16 @@ import convertTimeFormat as tcnv
 import interruptFunctions as itrf
 
 #-----------------------------------------------------------------------------------------------------------
-#--- extractGOESData: extract GOES data from NOAA site, and create a locat data base                     ---
+#--- extractGOESData: extract GOES data from NOAA site, and create a local data base                     ---
 #-----------------------------------------------------------------------------------------------------------
 
-def extractGOESData(event, start, stop):
+def extractGOESData(event, start, stop, comp_test='NA'):
 
-    'Extract GOES data from NOAA site, and create a locat data base. input: event, interruption start/stop time (e.g., 20120313        2012:03:13:22:41        2012:03:14:13:57)'
+    """
+    Extract GOES data from NOAA site, and create a locat data base. 
+    input: event, interruption start/stop time (e.g., 20120313        2012:03:13:22:41        2012:03:14:13:57'
+           option comp_test  is for testing (if comp_test == test, the test data will be read)
+    """
 
 #
 #--- modify date formats
@@ -208,7 +212,11 @@ def extractGOESData(event, start, stop):
 #--- prepare to print out data
 #
 
-    ofile = data_dir + event + '_goes.txt'
+    if comp_test == 'test':
+        ofile = test_data_dir + event + '_goes.txt'
+    else:
+        ofile = data_dir + event + '_goes.txt'
+
     out   = open(ofile, 'w')
     line  = 'Science Run Interruption: ' + str(start) +'\n\n'
     out.write(line)
@@ -221,7 +229,13 @@ def extractGOESData(event, start, stop):
 
     
     for html in htmlList:
-        cmd = 'lynx -source ' + html + '>./Working_dir/temp_data'
+        if comp_test == 'test':
+            atemp = re.split('pchan\/', html)
+            afile = house_keeping + 'NOAO_data/' + atemp[1]
+            cmd   = 'cp ' + afile + '  ./Working_dir/temp_data'
+        else:
+            cmd = 'lynx -source ' + html + '>./Working_dir/temp_data'
+
         os.system(cmd)
         
         f = open('./Working_dir/temp_data', 'r')
@@ -320,7 +334,7 @@ def extractGOESData(event, start, stop):
 #--- computeGOESStat: computing GOES statitics                    ---
 #--------------------------------------------------------------------
 
-def computeGOESStat(event, startTime):
+def computeGOESStat(event, startTime, comp_test ='NA'):
 
     'for give event name and interruption stating time, read the data from goes data, and compute statistics'
 
@@ -328,7 +342,11 @@ def computeGOESStat(event, startTime):
 
     (year, month, day, hours, minutes, seconds, interruptTime) = tcnv.dateFormatCon(begin)
 
-    file = data_dir + event + '_goes.txt'
+    if comp_test == 'test':
+        file = test_data_dir + event + '_goes.txt'
+    else:
+        file = data_dir + event + '_goes.txt'
+
     f    = open(file, 'r')
     data = [line.strip() for line in f.readlines()]
     f.close()
@@ -434,7 +452,11 @@ def computeGOESStat(event, startTime):
     p2Sig = math.sqrt(p2Avg2 / p2cnt - p2Avg * p2Avg)
     p5Sig = math.sqrt(p5Avg2 / p5cnt - p5Avg * p5Avg)
 
-    file = stat_dir + event + '_goes_stat'
+    if comp_test == 'test':
+        file = test_stat_dir + event + '_goes_stat'
+    else:
+        file = stat_dir + event + '_goes_stat'
+
     f    = open(file, 'w')
     f.write('\t\tAvg\t\t\tMax\t\tTime\t\tMin\t\tTime\t\tValue at Interruption Started\n')
     f.write('--------------------------------------------------------------------------------------------------------------------------\n')

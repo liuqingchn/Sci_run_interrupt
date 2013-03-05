@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -601,7 +601,9 @@ def sci_run_compute_gap(file = 'NA'):
 #--- update the file 
 #
 
-    os.system('mv file file~')
+    oldfile = file + '~'
+    cmd = 'mv ' + file + ' ' + oldfile
+    os.system(cmd)
     f = open(file, 'w')
     for ent in update:
         f.write(ent)

@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -56,7 +56,7 @@ import interruptFunctions as itrf
 #--- computeACEStat: compute ACE radiation data statistics                                                   ---
 #---------------------------------------------------------------------------------------------------------------
 
-def computeACEStat(event, start, stop):
+def computeACEStat(event, start, stop, comp_test = 'NA'):
 
     'for a gien event, start and stop data, compute ACE statistics. format: 20110804        2011:08:04:07:03        2011:08:07:10:25'
 
@@ -79,7 +79,11 @@ def computeACEStat(event, start, stop):
 #--- read ACE data
 #
 
-    line = data_dir + event + '_dat.txt'
+    if comp_test == 'test':
+        line = test_data_dir + event + '_dat.txt'
+    else:
+        line = data_dir + event + '_dat.txt'
+
     f    = open(line, 'r')
     data = [line.strip() for line in f.readlines()]
     f.close()
@@ -506,7 +510,10 @@ def computeACEStat(event, start, stop):
 #--- create stat table
 #
 
-    out = stat_dir + event + '_ace_stat'
+    if comp_test == 'test':
+        out = test_stat_dir + event + '_ace_stat'
+    else:
+        out = stat_dir + event + '_ace_stat'
 
     f   = open(out, 'w')
 

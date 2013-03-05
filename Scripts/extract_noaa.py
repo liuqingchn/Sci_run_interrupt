@@ -6,7 +6,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: May 02, 2012                                               #
+#               last update: Mar 01, 2013                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
@@ -53,7 +53,7 @@ import interruptFunctions as itrf
 #---startACEExtract:  the main script to extracct ACE data                       ---
 #-----------------------------------------------------------------------------------
 
-def startACEExtract(event, start, stop):
+def startACEExtract(event, start, stop, comp_test = 'NA'):
 
 
     'for a gien event, start and stop data, initiate ACE plottings.'
@@ -70,7 +70,7 @@ def startACEExtract(event, start, stop):
 #
 #--- extract ACE Data: put interruption starting/ending time in year, ydate format
 #
-    createRadDataTable(event, year1, ydate1, year2, ydate2) 
+    createRadDataTable(event, year1, ydate1, year2, ydate2, comp_test) 
 
 
 
@@ -78,12 +78,16 @@ def startACEExtract(event, start, stop):
 #--- createRadDataTable: create NOAA radiation data table          --
 #--------------------------------------------------------------------
 
-def createRadDataTable(event, startYear, startYday, stopYear, stopYday):
+def createRadDataTable(event, startYear, startYday, stopYear, stopYday, comp_test = 'NA'):
 
 
     "for a given event, interruption startYear, startYday, stopYear, stopYday, create a radiation data table <event>_dat.txt in data directory."
 
-    out_name = data_dir + event + '_dat.txt'
+    if comp_test == 'test':
+        out_name = test_data_dir + event + '_dat.txt'
+    else:
+        out_name = data_dir + event + '_dat.txt'
+
     out = open(out_name, 'w')
 
 #
