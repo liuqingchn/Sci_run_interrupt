@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.6
+#!/usr/bin/env /proj/sot/ska/bin/python
 
 #################################################################################
 #                                                                               #
@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Mar 05, 2013                                       #
+#               last update: Apr 11, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -30,7 +30,7 @@ import matplotlib.lines as lines
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()

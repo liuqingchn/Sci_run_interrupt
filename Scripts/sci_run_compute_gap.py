@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.6
+#!/usr/bin/env /proj/sot/ska/bin/python
 
 #########################################################################################
 #                                                                                       #
@@ -7,7 +7,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: May 02, 2012                                               #
+#               last update: Apr 11, 2013                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -20,7 +20,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()

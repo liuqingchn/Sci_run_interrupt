@@ -1,9 +1,11 @@
+#!/usr/bin/env /proj/sot/ska/bin/python
+
 #################################################################################################
 #                                                                                               #
 #    this file contains functions related time format conversions.                              #
 #                                                                                               #
 #       author: t. isobe (tisobe@cfa.harvard.edu)                                               #
-#       last update May 18, 2012                                                                #
+#       last update Apr 11, 2012                                                                #
 #                                                                                               #   
 #################################################################################################
 

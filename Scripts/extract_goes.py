@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.6
+#!/usr/bin/env /proj/sot/ska/bin/python
 
 #################################################################################
 #                                                                               #
@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Mar 01, 2013                                       #
+#               last update: Apr 11, 2013                                       #
 #                                                                               #
 #       P1    .8 -   4.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected        #
 #       P2   4.0 -   9.0 MeV protons (Counts/cm2 sec sr MeV) Uncorrected        #
@@ -24,7 +24,7 @@ import string
 #--- reading directory list
 #
 
-path = '/data/mta/Script/Interrupt_linux/house_keeping/dir_list'
+path = '/data/mta/Script/Interrupt/house_keeping/dir_list'
 f    = open(path, 'r')
 data = [line.strip() for line in f.readlines()]
 f.close()
