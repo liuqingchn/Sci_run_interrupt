@@ -247,8 +247,14 @@ def useDataSeeker(startYear, startYdate, stopYear, stopYdate, extract, colList):
     f.write(line)
     f.close()
 
-    cmd = 'punlearn dataseeker; dataseeker.pl infile=ds_file print=yes outfile=./ztemp.fits'
+    f  = open('./test', 'w')
+    f.close()
+    cmd = 'punlearn dataseeker; dataseeker.pl infile=ds_file print=yes outfile=./ztemp.fits loginFile=' + house_keeping + 'loginfile'
+
+#    cmd = 'dataseeker.pl infile=test outfile=./ztemp.fits search_crit="columns=' + extract + ' timestart=' + str(sectime1) + ' timestop=' + str(sectime2)
+#    cmd = cmd + '" loginFile=' + house_keeping + 'loginfile'
     os.system(cmd)
+
     cmd = 'dmlist "./ztemp.fits[cols '+ colList + '] " opt=data > ./zout_file'
     os.system(cmd)
 

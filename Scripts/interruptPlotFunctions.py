@@ -1,4 +1,4 @@
-#!/usr/local/bin/python2.6
+#!/usr/bin/env /proj/sot/ska/bin/python
 
 #########################################################################################################
 #                                                                                                       #
@@ -7,7 +7,7 @@
 #                                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                                               #
 #                                                                                                       #
-#               last update: Mar. 19, 2013                                                              #
+#               last update: Apr  30, 2013                                                              #
 #                                                                                                       #
 #########################################################################################################
 
@@ -16,11 +16,15 @@ import re
 import sys
 import os
 import string
+import numpy as np
 #
 #--- pylab plotting routine related modules
 #
 from pylab import *
-import numpy as np
+if __name__ == '__main__':
+
+    mpl.use('Agg')
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager

@@ -6,7 +6,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: Apr 11, 2013                                               #
+#               last update: Apr 30, 2013                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -15,11 +15,15 @@ import re
 import sys
 import os
 import string
+import numpy as np
 #
 #--- pylab plotting routine related modules
 #
 from pylab import *
-import numpy as np
+if __name__ == '__main__':
+
+    mpl.use('Agg')
+
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.font_manager as font_manager

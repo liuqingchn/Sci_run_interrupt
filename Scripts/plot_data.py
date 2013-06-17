@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Apr 11, 2013                                       #
+#               last update: Apr 30, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -15,18 +15,16 @@ import re
 import sys
 import os
 import string
+import numpy as np
 
 #
 #--- pylab plotting routine related modules
 #
-
-from pylab import *
-import numpy as np
 import matplotlib as mpl
-import matplotlib.pyplot as plt
-import matplotlib.font_manager as font_manager
-import matplotlib.lines as lines
 
+if __name__ == '__main__':
+
+    mpl.use('Agg')
 
 #
 #--- reading directory list
@@ -154,11 +152,16 @@ def plot_data():
 #---------------------------------------------------------------------------------------------------------------------
 
 
-if __name__ == '__main__':
+from pylab import *
+import matplotlib.pyplot as plt
+import matplotlib.font_manager as font_manager
+import matplotlib.lines as lines
 
 #
 #---- plotting the data and create html pages
 #
+
+if __name__ == '__main__':
 
     plot_data()
 

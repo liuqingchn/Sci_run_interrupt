@@ -4,8 +4,6 @@
 #                                                                                       #
 #       sci_run_get_radiation_data.py: get NOAA data for radiaiton plots                #
 #                                                                                       #
-#               this script must be run on rhodes to access noaa data                   #
-#                                                                                       #
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
