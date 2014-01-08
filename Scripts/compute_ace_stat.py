@@ -6,7 +6,7 @@
 #                                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                                       #
 #                                                                                               #
-#               last update: Apr  11, 2013                                                      #
+#               last update: Jan  08, 2014                                                      #
 #                                                                                               #
 #################################################################################################
 
@@ -183,6 +183,20 @@ def computeACEStat(event, start, stop, comp_test = 'NA'):
     r310_1060_min_t = 0
     r761_1060_max_t = 0
     r761_1060_min_t = 0
+
+    e38_int         = 0
+    e175_int        = 0
+    p47_int         = 0
+    p112_int        = 0
+    p310_int        = 0
+    p761_int        = 0
+    p1060_int       = 0
+    aniso_int       = 0
+    r38_175_int     = 0
+    r47_1060_int    = 0
+    r112_1060_int   = 0
+    r310_1060_int   = 0
+    r761_1060_int   = 0
 
 #
 #--- start accumulating the values
@@ -615,37 +629,59 @@ def computeACEStat(event, start, stop, comp_test = 'NA'):
 
     (max_pos, max_slope) = find_jump(e1, time)
     f.write('e1  \t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+
     f.write(line)
 
     (max_pos, max_slope) = find_jump(e2, time)
     f.write('e175\t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     (max_pos, max_slope) = find_jump(p1, time)
     f.write('p47 \t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     (max_pos, max_slope) = find_jump(p2, time)
     f.write('p112\t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     (max_pos, max_slope) = find_jump(p3, time)
     f.write('p310\t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     (max_pos, max_slope) = find_jump(p4, time)
     f.write('p761\t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     (max_pos, max_slope) = find_jump(p5, time)
     f.write('p1060\t')
-    line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
+    if max_pos == -999:
+        line = 'na\t\tna\n'
+    else:
+        line = '%5.4f\t\t%3.4f\n' % (time[max_pos], max_slope)
     f.write(line)
 
     f.close()
@@ -659,27 +695,31 @@ def find_jump(list, time):
 
     'find the steepest jump from a given line: input: a list. output: (max position, max slope)'
 
-    last      = len(list) - 10
-    diff      = 24.0 * (time[last] - time[10])/(last -10)
-    max_slope = 0;
-    max_pos   = 0;
-
-    if diff > 0:
-        for k in range(10, last):
-            start = k
-            end   = k + 1
-            sum   = 0
-
-            for m in range(0, 10):
-                sum += list[end] - list[start]
-                start += 1
-                end   += 1
-
-            slope = 0.1 * sum / diff
-            if slope > max_slope:
-                max_slope = slope
-                max_pos   = k + 5
-
-    return (max_pos, max_slope)
+    if len(list) < 10:
+        temp = [0 for x in range(100)]
+        return (-999, temp[0])
+    else:
+        last      = len(list) - 10
+        diff      = 24.0 * (time[last] - time[10])/(last -10)
+        max_slope = 0;
+        max_pos   = 0;
+    
+        if diff > 0:
+            for k in range(10, last):
+                start = k
+                end   = k + 1
+                sum   = 0
+    
+                for m in range(0, 10):
+                    sum += list[end] - list[start]
+                    start += 1
+                    end   += 1
+    
+                slope = 0.1 * sum / diff
+                if slope > max_slope:
+                    max_slope = slope
+                    max_pos   = k + 5
+    
+        return (max_pos, max_slope)
 
 

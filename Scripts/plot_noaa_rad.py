@@ -6,7 +6,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: Apr 30, 2013                                               #
+#               last update: Jan 08, 2014                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -440,22 +440,28 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
 #
 #--- check the case the data is not available (no data: -1.0 )
 #
-    avg = math.fsum(ydata7) / len(ydata7)
-
-    if avg < -0.95 and avg  > -1.05:
+    if len(ydata7) == 0:
         xtpos = xmin + 0.1 * (xmax - xmin)
         ytpos = 1.5
         plt.text(xtpos, ytpos, r'No Data', color='red', size=12)
 
     else:
+        avg = math.fsum(ydata7) / len(ydata7)
+
+        if avg < -0.95 and avg  > -1.05:
+            xtpos = xmin + 0.1 * (xmax - xmin)
+            ytpos = 1.5
+            plt.text(xtpos, ytpos, r'No Data', color='red', size=12)
+
+        else:
 #
 #---- plot line
 #
 
-        xval = []
-        yval = []
-        itrf.removeNoneData(xdata, ydata7, xval, yval, 0, 2)
-        p0, = plt.plot(xval, yval, color='red', lw=1)
+            xval = []
+            yval = []
+            itrf.removeNoneData(xdata, ydata7, xval, yval, 0, 2)
+            p0, = plt.plot(xval, yval, color='red', lw=1)
 
 #
 #--- plot radiation zone markers

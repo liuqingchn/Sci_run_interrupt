@@ -1,4 +1,4 @@
-#!/usr/bin/env /proj/sot/ska/bin/python
+#!/usr/bin/env  /proj/sot/ska/bin/python
 
 #################################################################################################################
 #                                                                                                               #
@@ -249,10 +249,11 @@ def useDataSeeker(startYear, startYdate, stopYear, stopYdate, extract, colList):
 
     f  = open('./test', 'w')
     f.close()
-    cmd = 'punlearn dataseeker; dataseeker.pl infile=ds_file print=yes outfile=./ztemp.fits loginFile=' + house_keeping + 'loginfile'
+#    cmd = 'punlearn dataseeker; dataseeker.pl infile=ds_file print=yes outfile=./ztemp.fits loginFile=' + house_keeping + 'loginfile'
 
-#    cmd = 'dataseeker.pl infile=test outfile=./ztemp.fits search_crit="columns=' + extract + ' timestart=' + str(sectime1) + ' timestop=' + str(sectime2)
-#    cmd = cmd + '" loginFile=' + house_keeping + 'loginfile'
+    cmd = 'dataseeker.pl infile=test outfile=./ztemp.fits search_crit="columns=' + extract + ' timestart=' + str(sectime1) + ' timestop=' + str(sectime2)
+    cmd = cmd + '" loginFile=' + house_keeping + 'loginfile'
+    print cmd
     os.system(cmd)
 
     cmd = 'dmlist "./ztemp.fits[cols '+ colList + '] " opt=data > ./zout_file'
