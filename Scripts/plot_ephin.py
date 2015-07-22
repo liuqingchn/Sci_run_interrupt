@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Apr 40, 2013                                       #
+#               last update: Apr 29, 2014                                       #
 #                                                                               #
 #################################################################################
 
@@ -168,7 +168,10 @@ def plotEphinMain(event, start, stop, comp_test = 'NA'):
 #--- plot data
 #
     if pannelNum == 1:
-        plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, ydate2, plotStart, plotStop, radZone, dataset)
+        if year1 < 2014:
+            plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, ydate2, plotStart, plotStop, radZone, dataset)
+        else:
+            plotEphin(dofy, prtn1, 'NA', 'NA', ydate1, ydate2, plotStart, plotStop, radZone, dataset)
         cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
         os.system(cmd)
 #
@@ -177,27 +180,48 @@ def plotEphinMain(event, start, stop, comp_test = 'NA'):
     else:
         pstart = plotStart
         prange = pannelNum + 1
-        for i in range(1, prange):
-            pend = pstart + 5
-            if i == 1:
-                plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, 'NA', pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
-                os.system(cmd)
-            elif i == pannelNum:
-                plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', ydate2, pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
-                os.system(cmd)
-            else:
-                plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', 'NA', pstart, pend, radZone, dataset)
-                cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
-                os.system(cmd)
-            pstart = pend
+        if year1 < 2014:
+            for i in range(1, prange):
+                pend = pstart + 5
+                if i == 1:
+                    plotEphin(dofy, prtn1, prtn2, prtn3, ydate1, 'NA', pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
+                    os.system(cmd)
+                elif i == pannelNum:
+                    plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', ydate2, pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
+                    os.system(cmd)
+                else:
+                    plotEphin(dofy, prtn1, prtn2, prtn3, 'NA', 'NA', pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
+                    os.system(cmd)
+                pstart = pend
+
+        else:
+            for i in range(1, prange):
+                pend = pstart + 5
+                if i == 1:
+                    plotEphin(dofy, prtn1, 'NA', 'NA', ydate1, 'NA', pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph.png'
+                    os.system(cmd)
+                elif i == pannelNum:
+                    plotEphin(dofy, prtn1, 'NA', 'NA', 'NA', ydate2, pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
+                    os.system(cmd)
+                else:
+                    plotEphin(dofy, prtn1, 'NA', 'NA', 'NA', 'NA', pstart, pend, radZone, dataset)
+                    cmd = 'mv ./out.png ' + plot_out + event + '_eph_pt'+ str(i) +  '.png'
+                    os.system(cmd)
+                pstart = pend
 
 #
 #--- plot intro page
 #
     pend = plotStart + 5
-    plotIntro(dofy, prtn2, ydate1, ydate2, plotStart, pend, radZone, dataset)
+    if year1 < 2014:
+        plotIntro(dofy, prtn2, ydate1, ydate2, plotStart, pend, radZone, dataset, year1)
+    else:
+        plotIntro(dofy, prtn1, ydate1, ydate2, plotStart, pend, radZone, dataset, year1)
     cmd = 'mv ./intro_out.png ' + intro_dir + event + '_intro.png'
     os.system(cmd)
 
@@ -247,7 +271,10 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
         ymin = p4Min
         ymax = p4Max
 
-    ax1 = plt.subplot(311)
+    if prtn2 != 'NA':
+        ax1 = plt.subplot(311)
+    else:
+        ax1 = plt.subplot(111)
 
     ax1.set_autoscale_on(False)                     #---- these three may not be needed for the new pylab, but 
     ax1.set_xbound(xmin,xmax)                       #---- they are necessary for the older version to set
@@ -271,6 +298,8 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
 
     if dataset == 0:
         plt.plot([xmin, xmax], [2.477,2.477], color='red', lw = 1)
+    else:
+        plt.plot([xmin, xmax], [4.80, 4.80], color='red', linestyle='--', lw=1.0)
 
 #
 #--- put lines to indicate the interrupted time period
@@ -288,7 +317,6 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
 
     if stop != 'NA':
         plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
-
 #
 #--- mark y axis
 #
@@ -303,68 +331,69 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
 #--- second panel: E150/p41 rate
 #----------------------------
 
+    if prtn2 != 'NA':
 #
 #--- set plotting range
 #
-    ymin = elcMin
-    ymax = elcMax
+        ymin = elcMin
+        ymax = elcMax
 
-    ax2 = plt.subplot(312, sharex=ax1)
-
-    ax2.set_autoscale_on(False)
-    ax2.set_xbound(xmin,xmax)
-
-    ax2.set_xlim(xmin, xmax, auto=False)
-    ax2.set_ylim(ymin, ymax, auto=False)
+        ax2 = plt.subplot(312, sharex=ax1)
+    
+        ax2.set_autoscale_on(False)
+        ax2.set_xbound(xmin,xmax)
+    
+        ax2.set_xlim(xmin, xmax, auto=False)
+        ax2.set_ylim(ymin, ymax, auto=False)
 
 #
 #--- skip every other y tix label so that easy to read
 #
 
-    tixRow = ptrf.makeTixsLabel(ymin, ymax)
-    ax2.set_yticklabels(tixRow)
+        tixRow = ptrf.makeTixsLabel(ymin, ymax)
+        ax2.set_yticklabels(tixRow)
 
 #
 #--- plot line
 #
 
-    p0, = plt.plot(dofy, prtn2, color='black',    lw=0, marker='.', markersize=0.5)
+        p0, = plt.plot(dofy, prtn2, color='black',    lw=0, marker='.', markersize=0.5)
 
 #
 #--- plot radiation zone makers
 #
-    ptrf.plotRadZone(radZone, xmin, xmax, ymin)
+        ptrf.plotRadZone(radZone, xmin, xmax, ymin)
 
 #
 #--- plot trigger level
 #
 
-    plt.plot([xmin, xmax], [2,2], color='red', lw = 1)
+        plt.plot([xmin, xmax], [2,2], color='red', lw = 1)
 
 #
 #--- put lines to indicate the interrupted time period
 #
 
-    if start != 'NA':
-        plt.plot([start, start], [ymin, ymax], color='red', lw=2)
+        if start != 'NA':
+            plt.plot([start, start], [ymin, ymax], color='red', lw=2)
 
-        xdiff = xmax - xmin
-        ydiff = ymax - ymin
-        xtext = start + 0.01 * xdiff
-        ytext = ymax - 0.2 * ydiff
-
-        plt.text(xtext, ytext, r'Interruption', color='red')
-
-    if stop  != 'NA':
-        plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
-
+            xdiff = xmax - xmin
+            ydiff = ymax - ymin
+            xtext = start + 0.01 * xdiff
+            ytext = ymax - 0.2 * ydiff
+    
+            plt.text(xtext, ytext, r'Interruption', color='red')
+    
+        if stop  != 'NA':
+            plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+    
 #
 #--- label y axis
 #
-    if dataset == 1:
-        ax2.set_ylabel('Log(e150  Rate)')
-    else:
-        ax2.set_ylabel('Log(p41 Rate)')
+        if dataset == 1:
+            ax2.set_ylabel('Log(e150  Rate)')
+        else:
+            ax2.set_ylabel('Log(p41 Rate)')
 
 #----------------------
 #--- third Panel: E1300
@@ -373,79 +402,82 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
 #
 #--- set plotting range
 #
-    ymin = elcMin
-    ymax = elcMax
+        ymin = elcMin
+        ymax = elcMax
 
-    ax3 = plt.subplot(313, sharex=ax1)
-
-    ax3.set_autoscale_on(False)
-    ax3.set_xbound(xmin,xmax)
-
-    ax3.set_xlim(xmin, xmax, auto=False)
-    ax3.set_ylim(ymin, ymax, auto=False)
-
+        ax3 = plt.subplot(313, sharex=ax1)
+    
+        ax3.set_autoscale_on(False)
+        ax3.set_xbound(xmin,xmax)
+    
+        ax3.set_xlim(xmin, xmax, auto=False)
+        ax3.set_ylim(ymin, ymax, auto=False)
+    
 #
 #--- skip every other y tix label so that easy to read
 #
 
-    tixRow = ptrf.makeTixsLabel(ymin, ymax)
-    ax3.set_yticklabels(tixRow)
+        tixRow = ptrf.makeTixsLabel(ymin, ymax)
+        ax3.set_yticklabels(tixRow)
 
 
 #
 #--- plot line
 #
-    p0, = plt.plot(dofy, prtn3, color='black',    lw=0, marker='.', markersize=0.5)
+        p0, = plt.plot(dofy, prtn3, color='black',    lw=0, marker='.', markersize=0.5)
 
 #
 #--- plot radiation zone makers
 #
-    ptrf.plotRadZone(radZone, xmin, xmax, ymin)
+        ptrf.plotRadZone(radZone, xmin, xmax, ymin)
 
 #
 #--- plot trigger level
 #
 
-    plt.plot([xmin, xmax], [1.301,1.301], color='red', lw = 1)
+        plt.plot([xmin, xmax], [1.301,1.301], color='red', lw = 1)
 
 #
 #--- put lines to indicate the interrupted time period
 #
 
-    if start != 'NA':
-        plt.plot([start, start], [ymin, ymax], color='red', lw=2)
-
-        xdiff = xmax - xmin
-        ydiff = ymax - ymin
-        xtext = start + 0.01 * xdiff
-        ytext = ymax - 0.2 * ydiff
-
-        plt.text(xtext, ytext, r'Interruption', color='red')
-
-    if stop  != 'NA':
-        plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+        if start != 'NA':
+            plt.plot([start, start], [ymin, ymax], color='red', lw=2)
+    
+            xdiff = xmax - xmin
+            ydiff = ymax - ymin
+            xtext = start + 0.01 * xdiff
+            ytext = ymax - 0.2 * ydiff
+    
+            plt.text(xtext, ytext, r'Interruption', color='red')
+    
+        if stop  != 'NA':
+            plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
 
 #
 #--- label axes
 #
-    ax3.set_ylabel('Log(e1300 Rate)')
-    xlabel('Day of Year')
+        ax3.set_ylabel('Log(e1300 Rate)')
 
 #
 #--- plot x axis tick label only at the third panel
 #
-    for ax in ax1, ax2, ax3:
-        if ax != ax3:
-            for label in ax.get_xticklabels():
-                label.set_visible(False)
-        else:
-            pass
+        for ax in ax1, ax2, ax3:
+            if ax != ax3:
+                for label in ax.get_xticklabels():
+                    label.set_visible(False)
+            else:
+                pass
 
+    xlabel('Day of Year')
 #
 #--- set the size of the plotting area in inch (width: 10.0in, height 5.0in)
 #
     fig = matplotlib.pyplot.gcf()
-    fig.set_size_inches(10.0, 5.0)
+    if prtn2 != 'NA':
+        fig.set_size_inches(10.0, 5.0)
+    else:
+        fig.set_size_inches(10.0, 1.7)
 #
 #--- save the plot in png format
 #
@@ -463,99 +495,177 @@ def plotEphin(dofy, prtn1, prtn2, prtn3, start, stop, xmin, xmax,  radZone, data
 #--- plotIntro create an intro page prtn2 plot                                                       ---
 #-----------------------------------------------------------------------------------------------------------------
 
-def plotIntro(dofy, prtn2, start, stop, xmin, xmax,  radZone, dataset):
+def plotIntro(dofy, prtn, start, stop, xmin, xmax,  radZone, dataset, syear):
 
-    'create an intro page prtn2 plot: Input: date (dofy), prtn2, interruption start/stop (dofy), plotting period(dofy), radZone info'
+    'create an intro page prtn plot: Input: date (dofy), prtn, interruption start/stop (dofy), plotting period(dofy), radZone info'
 
+#
+#--- before year 2014 use E150 or P41 -------
+#
+    if syear < 2014:
 #
 #--- setting the plotting ranges
 #
-    elcMin = -3
-    elcMax =  6
-
-    plt.close('all')
+        elcMin = -3
+        elcMax =  6
+    
+        plt.close('all')
 
 #
 #---- set a few parameters
 #
-    mpl.rcParams['font.size'] = 9
-    props = font_manager.FontProperties(size=6)
-    plt.subplots_adjust(hspace=0.10)
-
-
-#----------------------------
-#--- E150/P41 rate
-#----------------------------
+        mpl.rcParams['font.size'] = 9
+        props = font_manager.FontProperties(size=6)
+        plt.subplots_adjust(hspace=0.10)
 
 #
 #--- set plotting range
 #
-    ymin = elcMin
-    ymax = elcMax
+        ymin = elcMin
+        ymax = elcMax
 
-    ax = plt.subplot(111, autoscale_on=False)
+        ax = plt.subplot(111, autoscale_on=False)
 
 #    ax.set_autoscale_on(False)
 #    ax.set_xbound(xmin,xmax)
 
-    ax.set_xlim(xmin, xmax, auto=False)
-    ax.set_ylim(ymin, ymax, auto=False)
+        ax.set_xlim(xmin, xmax, auto=False)
+        ax.set_ylim(ymin, ymax, auto=False)
 
 #
 #--- skip every other y tix label so that easy to read
 #
 
-    tixRow = ptrf.makeTixsLabel(ymin, ymax)
-    ax.set_yticklabels(tixRow)
+        tixRow = ptrf.makeTixsLabel(ymin, ymax)
+        ax.set_yticklabels(tixRow)
 
 #
 #--- plot line
 #
 
-    xval = []
-    yval = []
-    itrf.removeNoneData(dofy, prtn2, xval, yval, -4)
-    plt.plot(xval, yval, color='black',    lw=0,  marker='.', markersize=0.8)
+        xval = []
+        yval = []
+        itrf.removeNoneData(dofy, prtn, xval, yval, -4)
+        plt.plot(xval, yval, color='black',    lw=0,  marker='.', markersize=0.8)
 
 #
 #--- plot radiation zone makers
 #
-    ptrf.plotRadZone(radZone, xmin, xmax, ymin)
+        ptrf.plotRadZone(radZone, xmin, xmax, ymin)
 
 #
 #--- plot trigger level
 #
 
-    plt.plot([xmin, xmax], [2,2], color='red', lw = 1)
+        plt.plot([xmin, xmax], [2,2], color='red', lw = 1)
 
 #
 #--- put lines to indicate the interrupted time period
 #
 
-    if start != 'NA':
-        plt.plot([start, start], [ymin, ymax], color='red', lw=2)
-
-        xdiff = xmax - xmin
-        ydiff = ymax - ymin
-        xtext = start + 0.01 * xdiff
-        ytext = ymax - 0.2 * ydiff
-
-        plt.text(xtext, ytext, r'Interruption', color='red')
-
-    if stop  != 'NA':
-        plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
-
+        if start != 'NA':
+            plt.plot([start, start], [ymin, ymax], color='red', lw=2)
+    
+            xdiff = xmax - xmin
+            ydiff = ymax - ymin
+            xtext = start + 0.01 * xdiff
+            ytext = ymax - 0.2 * ydiff
+    
+            plt.text(xtext, ytext, r'Interruption', color='red')
+    
+        if stop  != 'NA':
+            plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+    
 #
 #--- label x and y axis
 #
-    ax.set_xlabel('Day of Year')
-    xlabel("Day of Year")
-    if dataset == 1:
-        ax.set_ylabel('Log(e150 Rate)')
-    else:
-        ax.set_ylabel('Log(p41 Rate)')
+        ax.set_xlabel('Day of Year')
+        xlabel("Day of Year")
+        if dataset == 1:
+            ax.set_ylabel('Log(e150 Rate)')
+        else:
+            ax.set_ylabel('Log(p41 Rate)')
+    
+        plt.tight_layout()
 
-    plt.tight_layout()
+
+    else:
+#
+#--- use HRC plot after year 2014 --------------------------------------
+#
+        prtnMin = 3
+        prtnMax = 5
+    
+        plt.close('all')
+
+#
+#---- set a few parameters
+#
+        mpl.rcParams['font.size'] = 9
+        props = font_manager.FontProperties(size=6)
+        plt.subplots_adjust(hspace=0.10)
+#
+#--- set plotting range
+#
+        if dataset == 1:
+            ymin = prtnMin
+            ymax = prtnMax
+        else:
+            ymin = p4Min
+            ymax = p4Max
+    
+        ax = plt.subplot(111, autoscale_on=False)
+    
+        ax.set_autoscale_on(False)                     #---- these three may not be needed for the new pylab, but 
+        ax.set_xbound(xmin,xmax)                       #---- they are necessary for the older version to set
+    
+        ax.set_xlim(xmin=xmin, xmax=xmax, auto=False)
+        ax.set_ylim(ymin=ymin, ymax=ymax, auto=False)
+    
+#
+#--- plot line
+#
+        p0, =plt.plot(dofy,prtn, color='black',   lw=0, marker='.', markersize=0.5)
+
+#
+#--- plot radiation zone makers
+#
+        ptrf.plotRadZone(radZone, xmin, xmax, ymin)
+
+#
+#--- plot trigger level
+#
+
+        if dataset == 0:
+            plt.plot([xmin, xmax], [2.477,2.477], color='red', lw = 1)
+        else:
+            plt.plot([xmin, xmax], [4.80, 4.80], color='red', lw=1)
+
+#
+#--- put lines to indicate the interrupted time period
+#
+
+        if start != 'NA':
+            plt.plot([start, start], [ymin, ymax], color='red', lw=2)
+    
+            xdiff = xmax - xmin
+            ydiff = ymax - ymin
+            xtext = start + 0.01 * xdiff
+            ytext = ymax - 0.2 * ydiff
+    
+            plt.text(xtext, ytext, r'Interruption', color='red')
+    
+        if stop != 'NA':
+            plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+            
+#
+#--- mark axes
+#
+        ax.set_ylabel('Log(HRC Shield Rate)', size=8)
+        ax.set_xlabel('Day of Year')
+        xlabel("Day of Year")
+
+
 
 #
 #--- set the size of the plotting area in inch (width: 10.0in, height 2.0in)
@@ -566,4 +676,5 @@ def plotIntro(dofy, prtn2, start, stop, xmin, xmax,  radZone, dataset):
 #--- save the plot in png format
 #
     plt.savefig('intro_out.png', format='png', dpi=100)
+
 

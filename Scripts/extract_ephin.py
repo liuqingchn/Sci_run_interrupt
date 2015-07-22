@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: apr 11, 2013                                       #
+#               last update: Apr 28, 2014                                       #
 #                                                                               #
 #################################################################################
 
@@ -445,20 +445,21 @@ def computeEphinStat(event, startTime, comp_test = 'NA'):
 
         line = '%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\t%2.3e\n' % (hrcAvg, hrcSig, hrcMax, hrcMaxTime, hrcMin, hrcMinTime, hrcIntValue)
     else:
-        line = 'hrc\t%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\tNA\n' % (hrcAvg, hrcSig, hrcMax, hrcMaxTime, hrcMin, hrcMinTime)
+        line = '%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\tNA\n' % (hrcAvg, hrcSig, hrcMax, hrcMaxTime, hrcMin, hrcMinTime)
 
     f.write(line)
 
-    if dataset == 1:
-        f.write('e150\t')
-    else:
-        f.write('p41\t')
-
-    line = '%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\t%2.3e\n' % (e150Avg, e150Sig, e150Max, e150MaxTime, e150Min, e150MinTime, e150IntValue)
-    f.write(line)
-
-    line = 'e1300\t%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\t%2.3e\n' % (e1300Avg, e1300Sig, e1300Max, e1300MaxTime, e1300Min, e1300MinTime, e1300IntValue)
-    f.write(line)
-
+    if year < 2014:
+        if dataset == 1:
+            f.write('e150\t')
+        else:
+            f.write('p41\t')
+    
+        line = '%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\t%2.3e\n' % (e150Avg, e150Sig, e150Max, e150MaxTime, e150Min, e150MinTime, e150IntValue)
+        f.write(line)
+    
+        line = 'e1300\t%2.3e +/- %2.3e\t\t%2.3e\t%4.3f\t\t%2.3e\t%4.3f\t\t%2.3e\n' % (e1300Avg, e1300Sig, e1300Max, e1300MaxTime, e1300Min, e1300MinTime, e1300IntValue)
+        f.write(line)
+    
     f.close()
     

@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Apr 11, 2013                                       #
+#               last update: Apr 29, 2013                                       #
 #                                                                               #
 #################################################################################
 
@@ -302,6 +302,10 @@ def plotGOES(dofy, p1, p2, p5, start, stop, xmin, xmax,  radZone):
 
     if stop  != 'NA':
         plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+#
+#--- draw trigger level
+#
+    plt.plot([xmin,xmax],[2.0, 2.0], color='red', linestyle='--', lw=1.0)
 
 #
 #--- label y axis
@@ -353,6 +357,10 @@ def plotGOES(dofy, p1, p2, p5, start, stop, xmin, xmax,  radZone):
 
     if stop  != 'NA':
         plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+#
+#--- draw trigger level
+#
+    plt.plot([xmin,xmax],[-0.155, -0.155], color='red', linestyle='--', lw=1.0)
 
 #
 #--- label axes

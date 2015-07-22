@@ -6,7 +6,7 @@
 #                                                                                       #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                               #
 #                                                                                       #
-#               last update: Jan 08, 2014                                               #
+#               last update: Apr 29, 2014                                               #
 #                                                                                       #
 #########################################################################################
 
@@ -149,7 +149,11 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday, comp_test = 'NA'
 #
 
     if period == 1:
-        plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, stopYday, plotStart, plotStop, radZone)
+        if startYear < 2014:
+            plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, stopYday, plotStart, plotStop, radZone)
+        else:
+            plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, 'NA', startYday, stopYday, plotStart, plotStop, radZone)
+
         cmd = 'mv ./out.png ' + plot_out + name + '.png'
         os.system(cmd)
 
@@ -160,22 +164,41 @@ def aceDataPlot(name, startYear, startYday, stopYear, stopYday, comp_test = 'NA'
     else:
         pstart = plotStart 
         prange = period + 1
-        for i in range(1, prange):
-            pend = pstart + 5
-            if i == 1:
-                plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_out + name + '.png'
-                os.system(cmd)
-            elif i == period:
-                plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', stopYday, pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
-                os.system(cmd)
-            else:
-                plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', 'NA', pstart, pend, radZone)
-                cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
-                os.system(cmd)
+        if startYear < 2014:
+            for i in range(1, prange):
+                pend = pstart + 5
+                if i == 1:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, startYday, 'NA', pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '.png'
+                    os.system(cmd)
+                elif i == period:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', stopYday, pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
+                    os.system(cmd)
+                else:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, ani, 'NA', 'NA', pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
+                    os.system(cmd)
+    
+                pstart  = pend
 
-            pstart  = pend
+        else:
+            for i in range(1, prange):
+                pend = pstart + 5
+                if i == 1:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, 'NA', startYday, 'NA', pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '.png'
+                    os.system(cmd)
+                elif i == period:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, 'NA', 'NA', stopYday, pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
+                    os.system(cmd)
+                else:
+                    plotACE(dofy, e38, e175, p47, p112, p310, p761, p1060, 'NA', 'NA', 'NA', pstart, pend, radZone)
+                    cmd = 'mv ./out.png ' + plot_out + name + '_pt'+ str(i) + '.png'
+                    os.system(cmd)
+    
+                pstart  = pend
 
 
 #-----------------------------------------------------------------------------------
@@ -262,7 +285,10 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
 #--- first panel : electron data
 #---------------------------------
 
-    ax1  = plt.subplot(311)
+    if ydata7 !='NA':
+        ax1  = plt.subplot(311)
+    else:
+        ax1  = plt.subplot(211)
 
 #
 #--- set plotting range
@@ -334,7 +360,10 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
 #---- second panel: proton data 
 #---------------------------------
 
-    ax2 = plt.subplot(312, sharex=ax1)
+    if ydata7 != 'NA':
+        ax2 = plt.subplot(312, sharex=ax1)
+    else:
+        ax2 = plt.subplot(212, sharex=ax1)
 
 #
 #--- set plotting range
@@ -405,6 +434,10 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
         plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
 
 #
+#--- draw trigger level
+#
+    plt.plot([xmin, xmax], [4.70, 4.70], color='red', linestyle='--', lw=1.0)
+#
 #--- add legend
 #
     leg = legend([p0, p1, p2, p3, p4], ['Proton47-65','Proton112-187', 'Proton310-580','Proton781-1220','Prton1080-1910'], prop=props)
@@ -419,55 +452,56 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
 #--- third panel: anisotropy index 
 #-----------------------------------
 
-    ax3 = plt.subplot(313, sharex=ax1)
+    if ydata7 != 'NA':
+        ax3 = plt.subplot(313, sharex=ax1)
 
 #
 #--- set plotting range
 #
-    ymin = anisoMin
-    ymax = anisoMax
+        ymin = anisoMin
+        ymax = anisoMax
 
-    ax3.set_autoscale_on(False)                     #---- these three may not be needed for the new pylab, but 
-    ax3.set_xbound(xmin,xmax)                       #---- they are necessary for the older version to set
+        ax3.set_autoscale_on(False)                     #---- these three may not be needed for the new pylab, but 
+        ax3.set_xbound(xmin,xmax)                       #---- they are necessary for the older version to set
+    
+        ax3.set_xlim(xmin, xmax, auto=False)
+        ax3.set_ylim(ymin, ymax, auto=False)
 
-    ax3.set_xlim(xmin, xmax, auto=False)
-    ax3.set_ylim(ymin, ymax, auto=False)
-
-#    tixRow = ptrf.makeTixsLabel(ymin, ymax)
-#    ax3.set_yticklabels(tixRow)
+#       tixRow = ptrf.makeTixsLabel(ymin, ymax)
+#       ax3.set_yticklabels(tixRow)
 
 
 #
 #--- check the case the data is not available (no data: -1.0 )
 #
-    if len(ydata7) == 0:
-        xtpos = xmin + 0.1 * (xmax - xmin)
-        ytpos = 1.5
-        plt.text(xtpos, ytpos, r'No Data', color='red', size=12)
-
-    else:
-        avg = math.fsum(ydata7) / len(ydata7)
-
-        if avg < -0.95 and avg  > -1.05:
+        if len(ydata7) == 0:
             xtpos = xmin + 0.1 * (xmax - xmin)
             ytpos = 1.5
             plt.text(xtpos, ytpos, r'No Data', color='red', size=12)
-
+    
         else:
+            avg = math.fsum(ydata7) / len(ydata7)
+    
+            if avg < -0.95 and avg  > -1.05:
+                xtpos = xmin + 0.1 * (xmax - xmin)
+                ytpos = 1.5
+                plt.text(xtpos, ytpos, r'No Data', color='red', size=12)
+    
+            else:
 #
 #---- plot line
 #
 
-            xval = []
-            yval = []
-            itrf.removeNoneData(xdata, ydata7, xval, yval, 0, 2)
-            p0, = plt.plot(xval, yval, color='red', lw=1)
+                xval = []
+                yval = []
+                itrf.removeNoneData(xdata, ydata7, xval, yval, 0, 2)
+                p0, = plt.plot(xval, yval, color='red', lw=1)
 
 #
 #--- plot radiation zone markers
 #
 
-    ptrf.plotRadZone(radZone, xmin, xmax, ymin)
+        ptrf.plotRadZone(radZone, xmin, xmax, ymin)
 
 
 #
@@ -475,39 +509,50 @@ def plotACE(xdata, ydata0, ydata1, ydata2, ydata3, ydata4, ydata5, ydata6, ydata
 #
 
 
-    if start != 'NA':
-        plt.plot([start, start], [ymin, ymax], color='red', lw=2)
-
-        xdiff = xmax - xmin
-        ydiff = ymax - ymin
-        xtext = start + 0.01 * xdiff
-        ytext = ymax  - 0.1  * ydiff
- 
-        plt.text(xtext, ytext, r'Interruption', color='red')
-
-    if stop  != 'NA':
-        plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+        if start != 'NA':
+            plt.plot([start, start], [ymin, ymax], color='red', lw=2)
     
-
-    ax3.set_ylabel('Anisotropy Index')
-    xlabel('Day of Year')
+            xdiff = xmax - xmin
+            ydiff = ymax - ymin
+            xtext = start + 0.01 * xdiff
+            ytext = ymax  - 0.1  * ydiff
+     
+            plt.text(xtext, ytext, r'Interruption', color='red')
+    
+        if stop  != 'NA':
+            plt.plot([stop,  stop ], [ymin, ymax], color='red', lw=2)
+     
+    
+        ax3.set_ylabel('Anisotropy Index')
     
 #
 #--- plot x axis tick label only at the third panel
 #
 
-    for ax in ax1, ax2, ax3:
-        if ax != ax3:
-            for label in ax.get_xticklabels():
-                label.set_visible(False)
-        else:
-            pass
+    xlabel('Day of Year')
+    if ydata7 != 'NA':
+        for ax in ax1, ax2, ax3:
+            if ax != ax3:
+                for label in ax.get_xticklabels():
+                    label.set_visible(False)
+            else:
+                pass
+    else:
+        for ax in ax1, ax2:
+            if ax != ax2:
+                for label in ax.get_xticklabels():
+                    label.set_visible(False)
+            else:
+                pass
 
 #
 #--- set the size of the plotting area in inch (width: 10.0in, height 5.0in)
 #
     fig = matplotlib.pyplot.gcf()
-    fig.set_size_inches(10.0, 5.0)
+    if ydata7 != 'NA':
+        fig.set_size_inches(10.0, 5.0)
+    else:
+        fig.set_size_inches(10.0, 3.33)
 #
 #--- save the plot in png format
 #

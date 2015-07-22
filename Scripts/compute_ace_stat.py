@@ -6,7 +6,7 @@
 #                                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                                       #
 #                                                                                               #
-#               last update: Jan  08, 2014                                                      #
+#               last update: Apr  28, 2014                                                      #
 #                                                                                               #
 #################################################################################################
 
@@ -561,8 +561,9 @@ def computeACEStat(event, start, stop, comp_test = 'NA'):
     line = 'p1060\t\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n' % (p1060_avg,p1060_var,p1060_max,p1060_max_t,p1060_min,p1060_min_t,p1060_int)
     f.write(line)
 
-    line = 'anisotropy\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n'  % (aniso_avg,aniso_var,aniso_max,aniso_max_t,aniso_min,aniso_min_t,aniso_int)
-    f.write(line)
+    if year1 < 2014:
+        line = 'anisotropy\t%4.3e+/-%4.3e\t%4.3e\t%4.3f \t%4.3e\t%4.3f\t\t%4.3e\n'  % (aniso_avg,aniso_var,aniso_max,aniso_max_t,aniso_min,aniso_min_t,aniso_int)
+        f.write(line)
 
     f.write('\nHardness:\n')
 

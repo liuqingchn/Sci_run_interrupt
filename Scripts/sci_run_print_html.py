@@ -6,7 +6,7 @@
 #                                                                               #
 #               author: t. isobe (tisobe@cfa.harvard.edu)                       #
 #                                                                               #
-#               last update: Apr 11, 2013                                       #
+#               last update: Apr 28, 2014                                       #
 #                                                                               #
 #################################################################################
 
@@ -127,8 +127,10 @@ def printEachHtml(event, start, stop, gap, stopType):
     year  = int(atemp[0])
     if year < 2011:
         file = house_keeping + 'sub_html_template'
-    else:
+    elif year < 2014:
         file = house_keeping + 'sub_html_template_2011'
+    else:
+        file = house_keeping + 'sub_html_template_2014'
 
 #
 #--- read the template and start substituting 
@@ -157,7 +159,7 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#ace_table#',    stat,    data)
 
-    line =  event + '.png'
+    line =  event + '.png"'
     for i in range(2, pannelNum+1):
         padd = ' alt="main plot" style="width:100%">\n<br />\n<img src = "../Main_plot/' + event + '_pt' + str(i) + '.png '
 	line = line + padd
@@ -175,10 +177,10 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#eph_table#',    stat,    data)
 
-    line =  event + '_eph.png'
+    line =  event + '_eph.png"'
     for i in range(2, pannelNum+1):
         padd = ' alt="eph plot" style="width:100%">\n<br />\n<img src = "../Ephin_plot/' + event + '_eph_pt' + str(i) + '.png '
-	line = line + padd
+    line = line + padd
 
     data = re.sub('#eph_plot#', line , data)
 
@@ -193,7 +195,7 @@ def printEachHtml(event, start, stop, gap, stopType):
     stat = open(file).read()
     data = re.sub('#goes_table#',    stat,    data)
 
-    line =  event + '_goes.png'
+    line =  event + '_goes.png"'
     for i in range(2, pannelNum+1):
         padd = ' alt="goes plot" style="width:100%"> \n<br />\n<img src = "../GOES_plot/' + event + '_goes_pt' + str(i) + '.png '
 	line = line + padd
