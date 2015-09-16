@@ -1,0 +1,10 @@
+
+1- HRC shield rate/256 above ~ 248                         ---- 4.80  in log
+2- The internal background counter on ACIS exceeding a threshold (I don't know the value)
+- those two are autonomous shutdown. 
+
+Manual shutdown may be indicated if:
+3- the ACE P3 values is averaging above 50,000 for 2 hours    ---- 4.698 (in log)
+4- the ACE P3 fluence will exceed 2e9 in an orbit
+5- The GOES P2 rate exceeds 100                             ----- 2.0 in log
+6- the GOES P5 rate exceeds 0.7                             ---- -0.155 in log 
